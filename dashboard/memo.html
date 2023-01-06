@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Memo</title>
+</head>
+<body>
+    <div>配信中のメモ書きに使います。</div>
+    <form name="Memo" method="post" action="#">
+        <textarea name="memoText" id="memo" cols="40" rows="3"></textarea>
+    </form>
+    <div>
+	    <button id="apply">Apply</button>
+    </div>
+</body>
+<script>
+    const memoForm = document.forms.Memo;
+    const memoRep = nodecg.Replicant("memo")
+    document.getElementById("apply").onclick = () =>
+    {
+        memoRep.value = memoForm.memoText.value;
+    }
+
+</script>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Information(WIP)</title>
+</head>
+<body>
+    <form name="informationEdit" method="post" action="#">
+	<div>
+        <label for="title">Title</label>
+    </div>
+    <input type="text" id="title" name="title" size="30">
+	<div>
+        <label for="info">Information</label>
+    </div>
+    <textarea name="info" id="info" cols="30" rows="5"></textarea>
+    </form>
+    <div>
+	<button id="apply">Apply</button>
+    <button id="lock"><span id="is-lock"></span></button>
+    </div>
+</body>
+<script>
+    const isLock = document.getElementById("is-lock");
+    const titleElm = document.getElementById("title");
+    const infoElm = document.getElementById("info");
+    const lockRep = nodecg.Replicant("lock");
+    const titleRep = nodecg.Replicant("title");
+    const infoRep = nodecg.Replicant("info");
+    const form = document.forms.informationEdit;
+
+	document.getElementById("lock").onclick = () => {
+        if(lockRep.value == "lock"){
+            lockRep.value = "unlock";
+        }
+        else{
+        lockRep.value = "lock";
+        }
+	};
+    lockRep.on("change", (newValue) => {
+        if(lockRep.value == "lock"){
+            isLock.innerText = "Unlock";
+            titleElm.disabled = true;
+            infoElm.disabled = true;
+        }
+        else{
+            isLock.innerText = "Lock";
+            titleElm.disabled = false;
+            infoElm.disabled = false;
+        }
+    });
+    document.getElementById("apply").onclick = () =>
+    {
+        titleRep.value = form.title.value;
+        infoRep.value = form.info.value;
+    }
+    
+
+
+
+
+
+
+</script>
