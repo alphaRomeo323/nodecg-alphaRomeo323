@@ -10,6 +10,11 @@
         "name": "streams",
         "title": "Streams",
         "allowedTypes": ["json"]
+      },
+      {
+        "name": "logos",
+        "title": "Logos",
+        "allowedTypes": ["png","gif","apng"]
       }
       ],
       "dashboardPanels": [
@@ -27,7 +32,7 @@
             
           },
           {
-            "width": "4",
+            "width": "3",
             "name": "info",
             "title": "info",
             "file": "info.html"
@@ -38,6 +43,11 @@
             "file": "frame.html",
             "width": 1920,
             "height": 1080
+        },
+        {
+          "file": "frame_multi.html",
+          "width": 1920,
+          "height": 1080
         }
       ]
     }
