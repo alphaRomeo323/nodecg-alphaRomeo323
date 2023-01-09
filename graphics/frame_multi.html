@@ -19,7 +19,10 @@
         <div id="title-box"class="textbox title">
             <span id="title" class="font-jp"></span>
         </div>
-        <div id="right-box-upper" class="textbox right-box upper"></div>
+        <div id="right-box-upper" class="textbox right-box upper">
+            <div id="vc" class="text-[24px] font-jp absolute overflow-hidden top-2 left-2">
+            </div>
+        </div>
         <div id="right-box-lower" class="textbox right-box lower"></div>
         <div id="down-box" class="textbox bottom-box">
             <div class="bottom-box-text">
@@ -36,6 +39,14 @@
         <div class="logo">
             <img id="logo">
         </div>
+        <div id="vc-template" class="align-middle hidden text-left">
+            <img class="rounded-full inline shadow-2xl"
+                src="https://cdn.discordapp.com/icons/442549986207596544/a_4d26de7c9984ef733532a153e499cebf.gif?size=4096"
+                width="40" height="40" />
+            <span class="inline">Test</span>
+            
+        </div>
+        
             
     </body>
     <script>
@@ -70,13 +81,31 @@
                 }
             }
         });
+        /*
         nodecg.Replicant("info").on("change", (newValue) => {
             document.getElementById("animation-text").innerText = nodecg.Replicant("info").value;
         });
+        */
         nodecg.Replicant("logo").on("change", (newValue) => {
             if(newValue != undefined){
                 document.getElementById("logo").src = newValue;
             }
+        });
+        nodecg.Replicant("vc").on("change", (newValue) => {
+            const vcElem = document.getElementById("vc");
+            let child = vcElem.lastElementChild;
+            while (child) {
+                vcElem.removeChild(child);
+                child = vcElem.lastElementChild;
+            }
+            newValue.forEach((value) => {
+                let tmpElem = document.getElementById("vc-template").cloneNode(true);
+                tmpElem.classList.remove("hidden")
+                tmpElem.id = "";
+                tmpElem.firstElementChild.src = value.avatar;
+                tmpElem.lastElementChild.innerText = value.name;
+                vcElem.appendChild(tmpElem);
+            })
         });
         
 
