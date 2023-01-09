@@ -15,27 +15,44 @@
         "name": "logos",
         "title": "Logos",
         "allowedTypes": ["png","gif","apng"]
+      },
+      {
+        "name": "backgrounds",
+        "title": "Backgrounds",
+        "allowedTypes": ["png","gif","jpg","jpeg","svg"]
       }
       ],
       "dashboardPanels": [
           {
             "width": "2",
             "name": "time",
-            "title": "time",
+            "title": "Time",
             "file": "time.html"
           },
           {
             "width": "4",
             "name": "memo",
-            "title": "memo",
+            "title": "Memo",
             "file": "memo.html"
             
           },
           {
             "width": "3",
-            "name": "info",
-            "title": "info",
-            "file": "info.html"
+            "name": "stream",
+            "title": "Stream Information",
+            "file": "stream.html"
+          },
+          {
+            "width": "3",
+            "name": "image",
+            "title": "Image Changer",
+            "file": "image.html"
+          },
+          {
+            "width": "3",
+            "name": "status",
+            "title": "Stream Status",
+            "file": "status.html"
           }
       ],
       "graphics": [
@@ -48,7 +65,12 @@
           "file": "frame_multi.html",
           "width": 1920,
           "height": 1080
-        }
+        },
+        {
+          "file": "queue.html",
+          "width": 1920,
+          "height": 1080
+      }
       ]
     }
   }

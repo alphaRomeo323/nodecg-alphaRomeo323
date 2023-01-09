@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="m-0 p-0">
+    <head>
+        <meta charset="UTF-8" />
+        <title>queue</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap"
+            rel="stylesheet"
+        />
+        <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Sawarabi+Gothic" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+        <script src="common.js"></script>
+    </head>
+    <body class="m-0 p-0 w-screen h-screen bg-black overflow-hidden text-4xl text-white">
+        <div class="absolute w-[1920px] h-[1080px] border-2 -z-20 border-black"></div>
+        <div class="absolute w-screen h-screen overflow-hidden -z-30 brightness-50">
+            <img class="object-cover w-screen h-screen" id="background"/>
+        </div>
+        <div id="particles-js" class="absolute m-0 w-screen h-screen overflow-hidden -z-10"></div>
+        <div id="logo" class="pt-16 pl-20">
+            <img id="logo-img" class="h-48">
+        </div>
+        <div id="clock" class="absolute font top-28 mr-20 text-right w-[1820px]"></div>
+        <div class="ml-20">
+            <span id="status">
+                <span id="status-icon" class="material-icons align-sub text-4xl">flag</span>
+                <span id="status-text" class="font"></span> 
+            </span>
+        </div>
+        <div id="tech" class="tech-anime mt-14 ml-20 text-3xl">
+            <span id="tech-icon" class="material-icons align-sub text-4xl"></span>
+            <span id="tech-text"></span>
+        </div>
+        <div class="mt-32 mx-40 h-[320px]">
+            <div class="mt-10">
+                <span class="material-icons align-sub text-6xl inline-block">navigate_next</span>
+                <span id="title-text" class="font-onair text-6xl tracking-wide"></span>
+            </div>
+            <div class="mt-10">
+                <span class="material-icons align-sub text-5xl">access_time</span>
+                <span id="time-text" class="text-5xl font-onair tracking-wide"></span>
+            </div>
+            <div class="mt-10">
+                <span class="material-icons align-sub text-5xl">description</span>
+                <span id="description-text" class="text-4xl font tracking-wide"></span>
+            </div>
+        </div>
+        <div id="bgm" class="absolute bottom-10 ml-20">
+            <span class="material-icons align-sub text-4xl">queue_music</span>
+            <span id="bgm-text"></span>
+        </div>
+    </body>
+    <script>
+        particlesJS.load("particles-js", "particlesjs-config3.json", function () {
+            console.log("callback - particles.js config loaded");
+        });
+        let current = 0;
+        let notifications;
+        const animCallback = () => {
+            anime({
+                targets: ".tech-anime",
+                opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+                duration: 1000,
+                endDelay: 5000,
+                direction: "alternate",
+                easing: "linear",
+                complete: function (anim) {
+                    if (notifications != null) {
+                        document.getElementById("tech-icon").innerText = notifications[current].icon;
+                        document.getElementById("tech-text").innerText = notifications[current].detail;
+                        if (current === notifications.length - 1) {
+                            current = 0;
+                        } else {
+                            current++;
+                        }
+                    }
+                    animCallback();
+                },
+            });
+        };
+        animCallback();
+        setInterval(() => {
+            clock(document.getElementById("clock"));
+        }, 1000);
+        nodecg.Replicant("title").on("change", (newValue) => {
+            document.getElementById("title-text").innerText = newValue;
+        });
+        nodecg.Replicant("description").on("change", (newValue) => {
+            document.getElementById("description-text").innerText = newValue;
+        });
+        nodecg.Replicant("start-time").on("change", (newValue) => {
+            timechange();
+        });
+        nodecg.Replicant("end-time").on("change", (newValue) => {
+            timechange();
+        });
+        nodecg.Replicant("bgm").on("change", (newValue) => {
+            let text = "Unknown";
+            if (newValue != undefined) {
+                text = newValue;
+            }
+            document.getElementById("bgm-text").innerText = text;
+        });
+        nodecg.Replicant("logo").on("change", (newValue) => {
+            if(newValue != undefined){
+                document.getElementById("logo-img").src = newValue;
+            }
+        });
+        nodecg.Replicant("background").on("change", (newValue) => {
+            if(newValue != undefined){
+                document.getElementById("background").src = newValue;
+            }
+        });
+
+        const timechange = () => {
+            document.getElementById("time-text").innerText = nodecg.Replicant("start-time").value + " 〜 " + nodecg.Replicant("end-time").value;
+        }
+        const statusRep = nodecg.Replicant("status")
+        const restartRep = nodecg.Replicant("restart-time")
+        const statusElm = document.getElementById("status-text");
+        statusRep.on("change", newVal => {
+            anime({
+                targets: statusElm,
+                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+                duration: 2000,
+                easing: "linear",
+            });
+
+            if(newVal == "before"){
+                statusElm.innerText = "配信開始までもうしばらくお待ちください。 Please wait a moment.";
+            }
+            else if (newVal == "after"){
+                statusElm.innerText = "本日の配信は終了しました。 Thank you for Watching!";
+            }
+            else if (newVal == "interlude"){
+                statusElm.innerText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
+            }
+            anime({
+                targets: statusElm,
+                opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+                duration: 2000,
+                easing: "linear",
+            });
+
+        });
+        restartRep.on("change", (newValue) => {
+            if(statusRep.value == "interlude"){
+                statusElm.innerText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
+            }
+        });
+    </script>
+    <style>
+        .font {
+            font-family: "M PLUS Rounded 1c", sans-serif;
+        }
+        .font-logo {
+            font-family: "Audiowide", cursive;
+        }
+        .font-mincho {
+            font-family: 'Shippori Mincho', serif;
+        }
+        .font-onair{
+            font-family: 'Sawarabi Gothic', sans-serif;
+        }
+
+        .logo{
+            height: 180px;
+        }
+    </style>
+</html>

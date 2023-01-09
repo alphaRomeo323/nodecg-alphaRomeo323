@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Stram Status</title>
+</head>
+<body>
+    <section>
+		<p>Switcher</p>
+ 	   <button id="queue" class="switcher">queue</button>
+ 	   <button id="frame" class="switcher">frame</button>
+	</section>
+	<section>
+		<p>Status</p>
+ 	   <button id="before" class="switcher">Before</button>
+ 	   <button id="interlude" class="switcher">Interlude</button>
+	   <button id="after" class="switcher">After</button>
+	</section>
+    <section>
+		<div>
+			<label for="restart-time">再開時間</label>
+			<input id="restart-time" class="selector" type="time">
+            <button id="apply">Apply</button>
+
+		</div>
+    </section>
+</body>
+
+<script>
+    const queueSwitchElm = document.getElementById("queue");
+    const frameSwitchElm = document.getElementById("frame");
+    const beforeSwitchElm = document.getElementById("before");
+    const interludeSwitchElm = document.getElementById("interlude");
+    const afterSwitchElm = document.getElementById("after");
+    const timeElm = document.getElementById("restart-time");
+    const applyElm = document.getElementById("apply")
+    const switchRep = nodecg.Replicant("switch");
+    const statusRep = nodecg.Replicant("status");
+    const timeRep = nodecg.Replicant("restart-time")
+    queueSwitchElm.onclick = () => {
+        switchRep.value = "queue"
+    }
+    frameSwitchElm.onclick = () => {
+        switchRep.value = "frame"
+    }
+    beforeSwitchElm.onclick = () => {
+        statusRep.value = "before"
+    }
+    interludeSwitchElm.onclick = () => {
+        statusRep.value = "interlude"
+        send();
+    }
+
+    afterSwitchElm.onclick = () => {
+        statusRep.value = "after"
+    }
+    applyElm.onclick = () => {
+        send();
+    }
+    switchRep.on("change", (newValue) => {
+        queueSwitchElm.disabled = false;
+        frameSwitchElm.disabled = false;
+        if ( newValue == "queue"){
+            queueSwitchElm.disabled = true;
+        }
+        else if( newValue == "frame"){
+            frameSwitchElm.disabled = true;
+        }
+    });
+    statusRep.on("change", (newValue) => {
+        beforeSwitchElm.disabled = false;
+        interludeSwitchElm.disabled = false;
+        afterSwitchElm.disabled = false;
+        applyElm.disabled = true;
+        if ( newValue == "before"){
+            beforeSwitchElm.disabled = true;
+        }
+        else if( newValue == "after"){
+            afterSwitchElm.disabled = true;
+        }
+        else if( newValue == "interlude"){
+            interludeSwitchElm.disabled = true;
+            applyElm.disabled = false;
+            
+        }
+    });
+    const send = () => {
+        let val = timeElm.value;
+        if(val != undefined){
+		    timeRep.value = val;
+        }
+    }
+    
+</script>
+<style>
+	.switcher{
+		font-size: xx-large;
+	}
+</style>
+</html>

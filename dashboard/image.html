@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Stream</title>
+</head>
+<body>
+	
+	<section>
+		Press "Reload" to get the asset list.
+		<button id="reload">Reload</button>
+		<button id="apply">Apply</button>
+	</section>
+	<section>
+        <div>Logo</div>
+    	<select id="logos"></select>
+	</section>
+	<section>
+		<div>Backgrounds</div>
+    	<select id="backgrounds"></select>
+	</section>
+</body>
+<script>
+	const logoElm = document.getElementById("logos");
+	const backgroundElm = document.getElementById("backgrounds")
+	const reloadElm = document.getElementById("reload");
+	const applyElm = document.getElementById("apply");
+	const logoRep = nodecg.Replicant("logo");
+    const logoAsset = nodecg.Replicant("assets:logos");
+	const backgroundRep = nodecg.Replicant("background");
+	const backgroundAsset = nodecg.Replicant("assets:backgrounds");
+	applyElm.onclick = () => {
+		send();
+	}
+	const run = () => {
+		logoAsset.on('change', newVal => {
+			if(newVal != undefined) {
+				for (const assetKey of newVal) {
+					let option = document.createElement("option");
+					option.text = assetKey.name;
+					option.value = assetKey.url;
+					logoElm.appendChild(option.cloneNode(true));
+				}
+			}
+		});
+		backgroundAsset.on('change', newVal => {
+			if(newVal != undefined) {
+				for (const assetKey of newVal) {
+					let option = document.createElement("option");
+					option.text = assetKey.name;
+					option.value = assetKey.url;
+					backgroundElm.appendChild(option.cloneNode(true));
+				}
+			}
+		});
+	}
+	const send = () => {
+		logoRep.value = logoElm.selectedOptions[0].value;
+		backgroundRep.value = backgroundElm.selectedOptions[0].value;
+	}
+	reloadElm.onclick = () => {
+		logoElm.innerHTML="";
+		backgroundElm.innerHTML = "";
+		run();
+	}
+	run();
+</script>
+</html>
