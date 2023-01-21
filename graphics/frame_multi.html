@@ -53,33 +53,66 @@
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
-        const titleElm = document.getElementById("title-box");
-        const bottomBoxElm = document.getElementById("bottom-box-text");
+
         nodecg.Replicant("title").on("change", (newValue) => {
-            if ( newValue != undefined){
-            document.getElementById("title").innerText = newValue
-                titleElm.style.fontSize = '56px';
-                for(
-                    size = 56;
-                    titleElm.getBoundingClientRect().height < titleElm.scrollHeight && size > 12;
-                    size--
-                ) {
-                    titleElm.style.fontSize = size + 'px';
+            const titleElm = document.getElementById("title-box");
+            const titleText = document.getElementById("title");
+            anime({
+                targets: titleText,
+                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+                duration: 1000,
+                easing: "linear",
+                complete: function(anim) {
+                    if ( newValue != undefined){
+                        titleText.innerText = newValue
+                        titleElm.style.fontSize = '56px';
+                        for(
+                            size = 56;
+                            titleElm.getBoundingClientRect().height < titleElm.scrollHeight && size > 12;
+                           size--
+                        ) {
+                            titleElm.style.fontSize = size + 'px';
+                        }
+                    }   
+                    anime({
+                        targets: titleText,
+                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+                        duration: 1000,
+                        delay: 500,
+                        easing: "linear",
+                    });
                 }
-            }
+            });
         });
         nodecg.Replicant("memo").on("change", (newValue) => {
-            if ( newValue != undefined){
-            document.getElementById("memo").innerText = newValue
-                bottomBoxElm.style.fontSize = '40px';
-                for(
-                    size = 56;
-                    bottomBoxElm.getBoundingClientRect().height < bottomBoxElm.scrollHeight && size > 12;
-                    size--
-                ) {
-                    bottomBoxElm.style.fontSize = size + 'px';
+            const bottomBoxElm = document.getElementById("bottom-box-text");
+            const bottomBoxText = document.getElementById("memo");
+            anime({
+                targets: bottomBoxText,
+                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+                duration: 1000,
+                easing: "linear",
+                complete: function(anim) {
+                    if ( newValue != undefined){
+                        bottomBoxText.innerText = newValue
+                        bottomBoxElm.style.fontSize = '56px';
+                        for(
+                            size = 56;
+                            bottomBoxElm.getBoundingClientRect().height < bottomBoxElm.scrollHeight && size > 12;
+                            size--
+                        ) {
+                            bottomBoxElm.style.fontSize = size + 'px';
+                        }
+                    }
+                    anime({
+                        targets: bottomBoxText,
+                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+                        duration: 1000,
+                        easing: "linear",
+                        delay: 500
+                    });
                 }
-            }
+            });
         });
         nodecg.Replicant("logo").on("change", (newValue) => {
             if(newValue != undefined){

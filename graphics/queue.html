@@ -58,31 +58,6 @@
         particlesJS.load("particles-js", "particlesjs-config3.json", function () {
             console.log("callback - particles.js config loaded");
         });
-        let current = 0;
-        let notifications;
-        const animCallback = () => {
-            anime({
-                targets: ".tech-anime",
-                opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                duration: 1000,
-                endDelay: 5000,
-                direction: "alternate",
-                easing: "linear",
-                complete: function (anim) {
-                    if (notifications != null) {
-                        document.getElementById("tech-icon").innerText = notifications[current].icon;
-                        document.getElementById("tech-text").innerText = notifications[current].detail;
-                        if (current === notifications.length - 1) {
-                            current = 0;
-                        } else {
-                            current++;
-                        }
-                    }
-                    animCallback();
-                },
-            });
-        };
-        animCallback();
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
@@ -128,28 +103,28 @@
                 opacity: [{ value: 1, duration: 0 }, { value: 0 }],
                 duration: 2000,
                 easing: "linear",
+                complete: function(anim){
+                    if(newVal == "before"){
+                        statusElm.innerText = "配信開始までもうしばらくお待ちください。 Please wait a moment.";
+                    }
+                    else if (newVal == "after"){
+                        statusElm.innerText = "本日の配信は終了しました。 Thank you for Watching!";
+                    }
+                    else if (newVal == "interlude"){
+                        statusElm.innerText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
+                    }
+                    anime({
+                        targets: statusElm,
+                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+                        duration: 2000,
+                        easing: "linear",
+                    });
+                }
             });
-
-            if(newVal == "before"){
-                statusElm.innerText = "配信開始までもうしばらくお待ちください。 Please wait a moment.";
-            }
-            else if (newVal == "after"){
-                statusElm.innerText = "本日の配信は終了しました。 Thank you for Watching!";
-            }
-            else if (newVal == "interlude"){
-                statusElm.innerText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
-            }
-            anime({
-                targets: statusElm,
-                opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                duration: 2000,
-                easing: "linear",
-            });
-
         });
         restartRep.on("change", (newValue) => {
             if(statusRep.value == "interlude"){
-                statusElm.innerText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
+                statusElm.innerText = "休憩中… 配信再開は" + newValue + "を予定しています。"
             }
         });
     </script>
