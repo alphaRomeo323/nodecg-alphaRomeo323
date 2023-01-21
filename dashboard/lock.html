@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Stream descriptionrmation</title>
+    <style>
+        button {
+		font-size: large;
+	    }
+    </style>
+</head>
+<body> 
+    <section>
+        <p>重要な情報をロックします</p>
+        <button id="lock"><span id="is-lock"></span></button>
+    </section>
+</body>
+<script>
+    const isLock = document.getElementById("is-lock");
+    const lockRep = nodecg.Replicant("lock");
+    	document.getElementById("lock").onclick = () => {
+        if(lockRep.value == "lock"){
+            lockRep.value = "unlock";
+        }
+        else{
+            lockRep.value = "lock";
+        }
+	};
+
+    lockRep.on("change", (newValue) => {
+        if(lockRep.value == "lock"){
+            isLock.innerText = "Unlock";
+        }
+        else{
+            isLock.innerText = "Lock";
+        }
+
+    })
+</script>

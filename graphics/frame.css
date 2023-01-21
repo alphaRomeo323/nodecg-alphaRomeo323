@@ -2,7 +2,7 @@
     font-family: "M PLUS Rounded 1c", sans-serif;
 }
 body{
-    background:url(p_new0021_m_new00213.svg);
+    background:url(svg/background.svg);
 }
 
 .textbox-bg{
@@ -53,6 +53,4 @@ body{
     top:15px;
     width: 376px;
 }
-.scroll{
-    padding-left: 1000px;
-}
+

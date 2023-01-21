@@ -64,6 +64,18 @@
                 "name": "status",
                 "title": "Stream Status",
                 "file": "status.html"
+            },
+            {
+                "width": "3",
+                "name": "streamer",
+                "title": "Streamer's Information",
+                "file": "streamer.html"
+            },
+            {
+                "width": "2",
+                "name": "lock",
+                "title": "Lock",
+                "file": "lock.html"
             }
         ],
         "graphics": [

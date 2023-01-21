@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Streamer</title>
+</head>
+<body>
+    <section>
+        <label for="twitter-handle">Twitter @</label>
+        <input type="text" id="twitter-handle" name="twitter-handle" size="20">
+    </section>
+    <section>
+	    <button id="apply">Apply</button>
+    </section>
+</body>
+<script>
+    const twitterHandleElm = document.getElementById("twitter-handle");
+    const twitterHandleRep = nodecg.Replicant("twitter-handle");
+    nodecg.Replicant("lock").on("change", (newValue) => {
+        if(newValue == "lock"){
+            twitterHandleElm.disabled = true;
+        }
+        else{
+            twitterHandleElm.disabled = false;
+        }
+    });
+    document.getElementById("apply").onclick = () =>
+    {
+        twitterHandleRep.value = twitterHandleElm.value;
+    };
+
+    twitterHandleRep.on("change", (newValue) => {
+        twitterHandleElm.value = newValue;
+    });
+</script>

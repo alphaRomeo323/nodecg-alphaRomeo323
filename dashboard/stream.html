@@ -24,60 +24,44 @@
     </section>
     <section>
 	    <button id="apply">Apply</button>
-        <button id="lock"><span id="is-lock"></span></button>
     </section>
 </body>
 <script>
-    const isLock = document.getElementById("is-lock");
     const titleElm = document.getElementById("title");
     const descriptionElm = document.getElementById("description");
     const startElm = document.getElementById("startTime");
     const endElm = document.getElementById("endTime");
-    const lockRep = nodecg.Replicant("lock");
     const titleRep = nodecg.Replicant("title");
     const descriptionRep = nodecg.Replicant("description");
     const startRep = nodecg.Replicant("start-time");
     const endRep = nodecg.Replicant("end-time");
     const stream = nodecg.Replicant("stream");
-    let flag = 0;
-	document.getElementById("lock").onclick = () => {
-        if(lockRep.value == "lock"){
-            lockRep.value = "unlock";
-        }
-        else{
-        lockRep.value = "lock";
-        }
-	};
-    lockRep.on("change", (newValue) => {
-        if(lockRep.value == "lock"){
-            isLock.innerText = "Unlock";
-            titleElm.disabled = true;
-            descriptionElm.disabled = true;
-            startElm.disabled = true;
-            endElm.disabled = true;
-        }
-        else{
-            isLock.innerText = "Lock";
-            titleElm.disabled = false;
-            descriptionElm.disabled = false;
-            startElm.disabled = false;
-            endElm.disabled = false;
-        }
-    });
-    document.getElementById("apply").onclick = () =>
-    {
-        titleRep.value = titleElm.value;
-        descriptionRep.value = descriptionElm.value;
-        startRep.value = startElm.value;
-        endRep.value = endElm.value;
-    }
-    nodecg.Replicant("end-time").on("change", (newValue) => {
-        if(flag == 0){
-            titleElm.value = titleRep.value
-            descriptionElm.value = descriptionRep.value
-            startElm.value = startRep.value
-            endElm.value = endRep.value
-            flag = 1;
+    const lockRep = nodecg.Replicant("lock")
+    
+    NodeCG.waitForReplicants(titleRep,descriptionRep,startRep,endRep,lockRep).then(() => {
+        titleElm.value = titleRep.value
+        descriptionElm.value = descriptionRep.value
+        startElm.value = startRep.value
+        endElm.value = endRep.value
+        lockRep.on("change", (newValue) => {
+            if(newValue == "lock"){
+                titleElm.disabled = true;
+                descriptionElm.disabled = true;
+                startElm.disabled = true;
+                endElm.disabled = true;
+            }
+            else{
+                titleElm.disabled = false;
+                descriptionElm.disabled = false;
+                startElm.disabled = false;
+                endElm.disabled = false;
+            }
+        });
+        document.getElementById("apply").onclick = () =>{
+            titleRep.value = titleElm.value;
+            descriptionRep.value = descriptionElm.value;
+            startRep.value = startElm.value;
+            endRep.value = endElm.value;
         }
     });
     

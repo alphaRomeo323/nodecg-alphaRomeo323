@@ -30,7 +30,7 @@
             </div>  
         </div>
         <div class="absolute bg-slate-200 bottom-0 border-stone-600 border-8 w-screen h-16 bottom-border whitespace-nowrap overflow-hidden">
-            <div id="animation-text" class="font-jp scroll"></div>
+            <div id="animation-text" class="absolute font-jp h-16 align-middle"></div>
         </div>
         <div class="absolute bg-white px-4 rounded-full align-middle overflow-hidden border-stone-600 border-4 bottom-0 right-2">
             <span class="material-icons">schedule</span>
@@ -135,7 +135,56 @@
                 vcElem.appendChild(tmpElem);
             })
         });
-        
+        function watchValue(obj, propName, func) {
+            let value = obj[propName];
+            Object.defineProperty(obj, propName, {
+                get: () => value,
+                set: newValue => {
+                    value = newValue;
+                    func(newValue);
+                },
+                configurable: true
+            });
+        }
+        NodeCG.waitForReplicants(infoRep).then(() => {
+            var animation
+            const current = {value : null};
+            const animElm = document.getElementById("animation-text")
 
+            function onChange(newValue){
+                if (newValue >= infoRep.value.length){
+                    current.value = 0;
+                    return;
+                }
+                const newInfo = infoRep.value[newValue];
+                let messageLength = 0;
+                let tempHTML = ''
+                if (newInfo.svg !== ''){
+                    messageLength += 2;
+                    tempHTML += `<img src="svg/${newInfo.svg}" class="h-8 float-left mt-3 mr-2">`
+                }
+                else if(newInfo.materialIcon !== '') {
+                    messageLength += 1;
+                    tempHTML += `<span class="material-icons">${newInfo.materialIcon}</span>`
+                }
+                messageLength += newInfo.content.length
+                tempHTML += newInfo.content;
+
+                animElm.innerHTML = tempHTML;
+                
+                animation = anime({
+                    targets: animElm,
+                    translateX: [{ value: window.innerWidth, duration: 0 }, { value: -1 * defaultFontSize * messageLength }],
+                    easing: "linear",
+                    duration: scrollSpeed * ( window.innerWidth + defaultFontSize * messageLength),
+                    complete: function(anim){
+                        current.value++;
+                    }
+                })
+            }
+            Object.getOwnPropertyNames(current).forEach(propName => watchValue(current, propName, onChange));
+            current.value = 0;
+            
+        })
     </script>
 </html>
