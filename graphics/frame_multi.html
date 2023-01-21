@@ -15,28 +15,28 @@
         <script src="common.js"></script>
     </head>
     <body class="m-0 w-screen h-screen overflow-hidden text-[32px]">
-        <div class="greenback"></div>
-        <div id="title-box"class="textbox title">
+        <div class="absolute greenback border-stone-400 rounded-br-lg drop-shadow-lg"></div>
+        <div id="title-box"class="absolute border-stone-600 border-8 rounded-xl text-center align-middle overflow-hidden textbox-bg title">
             <span id="title" class="font-jp"></span>
         </div>
-        <div id="right-box-upper" class="textbox right-box upper">
+        <div id="right-box-upper" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box upper">
             <div id="vc" class="text-[24px] font-jp absolute overflow-hidden top-2 left-2">
             </div>
         </div>
-        <div id="right-box-lower" class="textbox right-box lower"></div>
-        <div id="down-box" class="textbox bottom-box">
-            <div class="bottom-box-text">
+        <div id="right-box-lower" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box lower"></div>
+        <div id="bottom-box" class="absolute border-stone-600 border-8 rounded-xl textbox-bg bottom-box">
+            <div id="bottom-box-text"class="absolute top-1 left-1 right-1 bottom-1 text-[40px] leading-tight overflow-hidden">  
                 <span id="memo" class="font-jp"></span>
-            </div>
+            </div>  
         </div>
-        <div class="bottom-line info">
+        <div class="absolute bg-slate-200 bottom-0 border-stone-600 border-8 w-screen h-16 bottom-border whitespace-nowrap overflow-hidden">
             <div id="animation-text" class="font-jp scroll"></div>
         </div>
-        <div class="bg-white px-4 rounded-full align-middle overflow-hidden shadow-2xl bottom-line clock">
+        <div class="absolute bg-white px-4 rounded-full align-middle overflow-hidden border-stone-600 border-4 bottom-0 right-2">
             <span class="material-icons">schedule</span>
             <span id="clock" class="font-jp"></span>
         </div>
-        <div class="logo">
+        <div class="absolute logo">
             <img id="logo">
         </div>
         <div id="vc-template" class="align-middle hidden text-left">
@@ -54,7 +54,7 @@
             clock(document.getElementById("clock"));
         }, 1000);
         const titleElm = document.getElementById("title-box");
-        const downBoxElm = document.getElementById("down-box");
+        const bottomBoxElm = document.getElementById("bottom-box-text");
         nodecg.Replicant("title").on("change", (newValue) => {
             if ( newValue != undefined){
             document.getElementById("title").innerText = newValue
@@ -71,21 +71,16 @@
         nodecg.Replicant("memo").on("change", (newValue) => {
             if ( newValue != undefined){
             document.getElementById("memo").innerText = newValue
-                titleElm.style.fontSize = '40px';
+                bottomBoxElm.style.fontSize = '40px';
                 for(
                     size = 56;
-                    titleElm.getBoundingClientRect().height < titleElm.scrollHeight && size > 12;
+                    bottomBoxElm.getBoundingClientRect().height < bottomBoxElm.scrollHeight && size > 12;
                     size--
                 ) {
-                    titleElm.style.fontSize = size + 'px';
+                    bottomBoxElm.style.fontSize = size + 'px';
                 }
             }
         });
-        /*
-        nodecg.Replicant("info").on("change", (newValue) => {
-            document.getElementById("animation-text").innerText = nodecg.Replicant("info").value;
-        });
-        */
         nodecg.Replicant("logo").on("change", (newValue) => {
             if(newValue != undefined){
                 document.getElementById("logo").src = newValue;
