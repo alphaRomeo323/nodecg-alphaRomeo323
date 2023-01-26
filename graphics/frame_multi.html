@@ -16,7 +16,7 @@
     </head>
     <body class="m-0 w-screen h-screen overflow-hidden text-[32px]">
         <div class="absolute greenback border-stone-400 rounded-br-lg drop-shadow-lg"></div>
-        <div id="title-box"class="absolute border-stone-600 border-8 rounded-xl text-center align-middle overflow-hidden textbox-bg title">
+        <div id="title-box"class="absolute border-stone-600 border-8 rounded-xl text-center overflow-hidden flex items-center textbox-bg title">
             <span id="title" class="font-jp"></span>
         </div>
         <div id="right-box-upper" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box upper">
@@ -25,7 +25,7 @@
         </div>
         <div id="right-box-lower" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box lower"></div>
         <div id="bottom-box" class="absolute border-stone-600 border-8 rounded-xl textbox-bg bottom-box">
-            <div id="bottom-box-text"class="absolute top-1 left-1 right-1 bottom-1 text-[40px] leading-tight overflow-hidden">  
+            <div id="bottom-box-text"class="absolute top-1 left-1 right-1 bottom-1 text-[40px] leading-tight overflow-hidden flex items-center">  
                 <span id="memo" class="font-jp"></span>
             </div>  
         </div>
@@ -36,20 +36,37 @@
             <span class="material-icons">schedule</span>
             <span id="clock" class="font-jp"></span>
         </div>
-        <div class="absolute logo">
+        <div class="absolute logo top-8">
             <img id="logo">
         </div>
+        <div id="current" class="absolute backdrop-blur-md bg-slate-200/50 top-8 right-0 current rounded-l-lg overflow-hidden hidden">
+            <div class="font-jp ml-1">
+                <section>
+                    <span class="material-icons align-sub text-4xl mr-2">queue_music</span>
+                    <span id="track-name"></span>
+                </section>
+                <section>
+                    <span id="track-artist"></span>
+                </section>
+                <section>
+                    <span id="track-album"></span>
+                </section>
+            </div>
+        </div>    
         <div id="vc-template" class="align-middle hidden text-left">
             <img class="rounded-full inline shadow-2xl"
                 src="https://cdn.discordapp.com/icons/442549986207596544/a_4d26de7c9984ef733532a153e499cebf.gif?size=4096"
                 width="40" height="40" />
             <span class="inline">Test</span>
-            
-        </div>
-        
-            
+        </div>    
     </body>
     <script>
+const scrollSpeed = 16;
+        const defaultFontSize = 32;
+        const BGMdelay = 10000;
+        const infoRep = nodecg.Replicant("frame-info");
+        const playBackRep = nodecg.Replicant("playback");
+        var current;
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
@@ -69,11 +86,11 @@
                         for(
                             size = 56;
                             titleElm.getBoundingClientRect().height < titleElm.scrollHeight && size > 12;
-                           size--
+                            size--
                         ) {
                             titleElm.style.fontSize = size + 'px';
                         }
-                    }   
+                    }
                     anime({
                         targets: titleText,
                         opacity: [{ value: 0, duration: 0 }, { value: 1 }],
@@ -119,22 +136,7 @@
                 document.getElementById("logo").src = newValue;
             }
         });
-        nodecg.Replicant("vc", 'nodecg-discord-utils').on("change", (newValue) => {
-            const vcElem = document.getElementById("vc");
-            let child = vcElem.lastElementChild;
-            while (child) {
-                vcElem.removeChild(child);
-                child = vcElem.lastElementChild;
-            }
-            newValue.forEach((value) => {
-                let tmpElem = document.getElementById("vc-template").cloneNode(true);
-                tmpElem.classList.remove("hidden")
-                tmpElem.id = "";
-                tmpElem.firstElementChild.src = value.avatar;
-                tmpElem.lastElementChild.innerText = value.name;
-                vcElem.appendChild(tmpElem);
-            })
-        });
+
         function watchValue(obj, propName, func) {
             let value = obj[propName];
             Object.defineProperty(obj, propName, {
@@ -147,7 +149,6 @@
             });
         }
         NodeCG.waitForReplicants(infoRep).then(() => {
-            var animation
             const current = {value : null};
             const animElm = document.getElementById("animation-text")
 
@@ -165,14 +166,14 @@
                 }
                 else if(newInfo.materialIcon !== '') {
                     messageLength += 1;
-                    tempHTML += `<span class="material-icons">${newInfo.materialIcon}</span>`
+                    tempHTML += `<span class="material-icons align-sub text-4xl mr-2">${newInfo.materialIcon}</span>`
                 }
                 messageLength += newInfo.content.length
                 tempHTML += newInfo.content;
 
                 animElm.innerHTML = tempHTML;
                 
-                animation = anime({
+                anime({
                     targets: animElm,
                     translateX: [{ value: window.innerWidth, duration: 0 }, { value: -1 * defaultFontSize * messageLength }],
                     easing: "linear",
@@ -183,8 +184,62 @@
                 })
             }
             Object.getOwnPropertyNames(current).forEach(propName => watchValue(current, propName, onChange));
-            current.value = 0;
+            if(infoRep !== undefined)
+                current.value = 0;
             
         })
+        NodeCG.waitForReplicants(playBackRep).then(() =>{
+            const currentBGMElm = document.getElementById("current");
+            const trackNameElm = document.getElementById("track-name");
+            const trackArtistElm = document.getElementById("track-artist");
+            const trackAlbumElm = document.getElementById("track-album");
+            playBackRep.on("change",(newValue) =>{
+                trackArtistElm.innerText = "";
+                trackAlbumElm.innerText = "";
+                if (newValue.playing === false){
+                    trackNameElm.innerText = "Stopped"
+                    return;
+                }
+                trackNameElm.innerText = newValue.track;
+                if (newValue.artist !== "")
+                    trackArtistElm.innerText = `by ${newValue.artist}`;
+                if (newValue.album !== "")
+                    trackAlbumElm.innerText = `from ${newValue.album}`;
+                if (tl === undefined)
+                    currentBGMElm.classList.remove("hidden");
+                else tl.remove(currentBGMElm);
+                var tl = anime.timeline({
+                easing: 'easeOutExpo',
+                duration: 750,
+                });
+                tl.add({
+                    targets:currentBGMElm,
+                    translateX: [{ value: 380, duration: 0 }, { value: 0 }],
+                    duration: 1000,
+                });
+                tl.add({
+                    targets:currentBGMElm,
+                    translateX: 380,
+                    duration: 1000,
+                    delay: BGMdelay,
+                });
+            });
+        })
+        nodecg.Replicant("vc", 'nodecg-discord-utils').on("change", (newValue) => {
+            const vcElem = document.getElementById("vc");
+            let child = vcElem.lastElementChild;
+            while (child) {
+                vcElem.removeChild(child);
+                child = vcElem.lastElementChild;
+            }
+            newValue.forEach((value) => {
+                let tmpElem = document.getElementById("vc-template").cloneNode(true);
+                tmpElem.classList.remove("hidden")
+                tmpElem.id = "";
+                tmpElem.firstElementChild.src = value.avatar;
+                tmpElem.lastElementChild.innerText = value.name;
+                vcElem.appendChild(tmpElem);
+            })
+        });
     </script>
 </html>

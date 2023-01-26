@@ -1,6 +1,25 @@
+const Mopidy = require("mopidy")
+const mopidyModule = require("./mopidy")
+
 module.exports = function (nodecg) {
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
     const descriptionRep = nodecg.Replicant("description");
+    const playBackRep = nodecg.Replicant("playback");
+    playBackRep.value = { playing: false };
+
+    const mopidy = new Mopidy({
+        autoConnect: true,
+        webSocketUrl: "ws://localhost:6680/mopidy/ws",
+      });
+    mopidy.on("state:online", async () => {
+        nodecg.log.info("Mopidy extension is ready.")
+        mopidyModule(mopidy,nodecg);
+    })
+
+    mopidy.on("websocket:error", (error) => {
+        nodecg.log.error(`WebSocket error: ${error.message}`);
+        nodecg.log.error(`You can continue using bundle, but Mopidy extension is disabled.`);
+      });
 
     const send = () =>{
         let frameInfo = [];
@@ -34,6 +53,4 @@ module.exports = function (nodecg) {
     descriptionRep.on("change", ()=>{
         send();
     })
-
-
 }

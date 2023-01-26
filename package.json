@@ -97,5 +97,6 @@
         ]
     },
     "dependencies": {
+        "mopidy": "^1.3.0"
     }
 }
