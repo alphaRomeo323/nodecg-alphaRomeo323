@@ -29,5 +29,5 @@ jobs:
       uses: docker/build-push-action@v2
       with:
           push: true
-          tags: ghcr.io/alphaRomeo323/nodecg-alpha-stream:latest
+          tags: ghcr.io/alpharomeo323/nodecg-alpha-stream:latest
       
