@@ -51,10 +51,15 @@
         </div>
         <div id="bgm" class="absolute bottom-10 ml-20">
             <span class="material-icons align-sub text-4xl">queue_music</span>
-            <span id="bgm-text"></span>
+            <span id="bgm-text" class="font"></span>
         </div>
     </body>
     <script>
+        const animationTime = 2000;
+        const statusRep = nodecg.Replicant("status")
+        const restartRep = nodecg.Replicant("restart-time")
+        const statusElm = document.getElementById("status-text");
+        const playBackRep = nodecg.Replicant("playback");
         particlesJS.load("particles-js", "particlesjs-config3.json", function () {
             console.log("callback - particles.js config loaded");
         });
@@ -94,14 +99,12 @@
         const timechange = () => {
             document.getElementById("time-text").innerText = nodecg.Replicant("start-time").value + " 〜 " + nodecg.Replicant("end-time").value;
         }
-        const statusRep = nodecg.Replicant("status")
-        const restartRep = nodecg.Replicant("restart-time")
-        const statusElm = document.getElementById("status-text");
+        
         statusRep.on("change", newVal => {
             anime({
                 targets: statusElm,
                 opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-                duration: 2000,
+                duration: animationTime,
                 easing: "linear",
                 complete: function(anim){
                     if(newVal == "before"){
@@ -116,7 +119,7 @@
                     anime({
                         targets: statusElm,
                         opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                        duration: 2000,
+                        duration: animationTime,
                         easing: "linear",
                     });
                 }
@@ -126,6 +129,38 @@
             if(statusRep.value == "interlude"){
                 statusElm.innerText = "休憩中… 配信再開は" + newValue + "を予定しています。"
             }
+        });
+        playBackRep.on("change", newValue => {
+            const BGMTextElm = document.getElementById("bgm-text");
+            anime({
+                targets: BGMTextElm,
+                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+                duration: animationTime,
+                easing: "linear",
+                complete: function(anim){
+                    if (!newValue.playing){
+                        BGMTextElm.innerText = "Stopped";
+                    }
+                    else {
+                        if(newValue.artist !== ""){
+                            BGMTextElm.innerText = `${newValue.artist} -`;
+                        }
+                        else{
+                            BGMTextElm.innerText = "Unknown Artist -";
+                        }
+                        BGMTextElm.innerText += ` ${newValue.track}`;
+                        if(newValue.album !== ""){
+                            BGMTextElm.innerText += ` (from ${newValue.album})`
+                        }
+                    }
+                    anime({
+                        targets: BGMTextElm,
+                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+                        duration: animationTime,
+                        easing: "linear",
+                    });
+                }
+            });
         });
     </script>
     <style>
