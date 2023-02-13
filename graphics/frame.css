@@ -1,8 +1,23 @@
 .font-jp {
     font-family: "M PLUS Rounded 1c", sans-serif;
 }
-body{
+
+.frame-back{
     background:url(svg/background.svg);
+    position: absolute;
+    left: 1504px ;
+    top: 0px ;
+    width: 100vw;
+    height: 100vw;
+}
+.frame-back::after{
+    content: "";
+    background:url(svg/background.svg);
+    position: absolute;
+    left: -1504px;
+    top: 846px;
+    width: 100vw;
+    height: 100vw;
 }
 
 .textbox-bg{
@@ -11,7 +26,6 @@ body{
 .greenback{
     width: 1524px;
     height: 866px;
-    background: #00ff00;
     border-width: 20px;
     border-style: hidden ridge ridge hidden;
 }
