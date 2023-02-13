@@ -15,8 +15,10 @@
     </head>
     <body class="m-0 w-screen h-screen overflow-hidden text-[32px]">
         <div class="absolute greenback border-stone-400 rounded-br-lg drop-shadow-lg"></div>
-        <div id="title-box"class="absolute border-stone-600 border-8 rounded-xl text-center overflow-hidden flex items-center justify-center textbox-bg title">
-            <span id="title" class="font-jp"></span>
+        <div id="title-box"class="absolute border-stone-600 border-8 rounded-xl textbox-bg title">
+            <div id="title-box-text" class="absolute top-1 left-1 right-1 bottom-1 text-[56px] leading-tight overflow-hidden flex items-center justify-center text-center">
+                <span id="title" class="font-jp"></span>
+            </div>
         </div>
         <div id="right-box-upper" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box"></div>
         <div id="bottom-box" class="absolute border-stone-600 border-8 rounded-xl textbox-bg bottom-box">
@@ -64,11 +66,11 @@
         }, 1000);
 
         nodecg.Replicant("title").on("change", (newValue) => {
-            textFadeUpdate(newValue, document.getElementById("title"), document.getElementById("title-box"), 56);
+            textFadeUpdate(newValue, document.getElementById("title"), document.getElementById("title-box-text"), 56);
         });
 
         nodecg.Replicant("memo").on("change", (newValue) => {
-            textFadeUpdate(newValue, document.getElementById("bottom-box-text"), document.getElementById("memo"), 48);
+            textFadeUpdate(newValue, document.getElementById("memo"), document.getElementById("bottom-box-text"), 40);
         });
         
         nodecg.Replicant("logo").on("change", (newValue) => {
@@ -79,7 +81,7 @@
         NodeCG.waitForReplicants(infoRep).then(() => {
             ReplicantScrollCallback(infoRep, document.getElementById("animation-text"), 0);
         })
-        
+
         NodeCG.waitForReplicants(playBackRep).then(() =>{
             currentTrackUpdate(playBackRep);
         })

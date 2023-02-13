@@ -10,10 +10,8 @@
         />
         <link href="https://fonts.googleapis.com/css?family=Sawarabi+Gothic" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-        <script src="common.js"></script>
     </head>
     <body class="m-0 p-0 w-screen h-screen bg-black overflow-hidden text-4xl text-white">
         <div class="absolute w-[1920px] h-[1080px] border-2 -z-20 border-black"></div>
@@ -31,22 +29,20 @@
                 <span id="status-text" class="font"></span> 
             </span>
         </div>
-        <div id="tech" class="tech-anime mt-14 ml-20 text-3xl">
-            <span id="tech-icon" class="material-icons align-sub text-4xl"></span>
-            <span id="tech-text"></span>
+        <div id="info" class="tech-anime mt-14 ml-20 text-3xl font align-middle">
         </div>
-        <div class="mt-32 mx-40 h-[320px]">
-            <div class="mt-10">
+        <div class="absolute top-[480px] mx-40 h-[320px]">
+            <div class="mt-10" id="title">
                 <span class="material-icons align-sub text-6xl inline-block">navigate_next</span>
                 <span id="title-text" class="font text-6xl tracking-wide"></span>
             </div>
-            <div class="mt-10">
+            <div class="mt-10" title="time">
                 <span class="material-icons align-sub text-5xl">access_time</span>
                 <span id="time-text" class="text-5xl font tracking-wide"></span>
             </div>
-            <div class="mt-10">
+            <div class="mt-10" title="detail">
                 <span class="material-icons align-sub text-5xl">description</span>
-                <span id="description-text" class="text-4xl font tracking-wide"></span>
+                <span id="detail-text" class="text-4xl font tracking-wide"></span>
             </div>
         </div>
         <div id="bgm" class="absolute bottom-10 ml-20">
@@ -54,23 +50,31 @@
             <span id="bgm-text" class="font"></span>
         </div>
     </body>
-    <script>
+    <script type="module">
+        import {clock, textFadeUpdate} from "./js/common.js"
+        import anime from "../node_modules/animejs/lib/anime.es.js"
+        import {currentTrackUpdate} from "./js/playback_anime.js"
+        import {ReplicantAnimCallback} from "./js/anime_callback.js"
+        
         const animationTime = 2000;
         const statusRep = nodecg.Replicant("status")
         const restartRep = nodecg.Replicant("restart-time")
         const statusElm = document.getElementById("status-text");
         const playBackRep = nodecg.Replicant("playback");
+        const infoRep = nodecg.Replicant("queue-info");
+
         particlesJS.load("particles-js", "particlesjs-config3.json", function () {
             console.log("callback - particles.js config loaded");
         });
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
+
         nodecg.Replicant("title").on("change", (newValue) => {
-            document.getElementById("title-text").innerText = newValue;
+            textFadeUpdate(newValue, document.getElementById("title-text"), document.getElementById("title"))
         });
         nodecg.Replicant("description").on("change", (newValue) => {
-            document.getElementById("description-text").innerText = newValue;
+            textFadeUpdate(newValue, document.getElementById("detail-text"), document.getElementById("detail"))
         });
         nodecg.Replicant("start-time").on("change", (newValue) => {
             timechange();
@@ -97,70 +101,55 @@
         });
 
         const timechange = () => {
-            document.getElementById("time-text").innerText = nodecg.Replicant("start-time").value + " 〜 " + nodecg.Replicant("end-time").value;
+            textFadeUpdate(
+                nodecg.Replicant("start-time").value + " 〜 " + nodecg.Replicant("end-time").value,
+                document.getElementById("time-text"),
+                document.getElementById("time")
+            )
         }
         
         statusRep.on("change", newVal => {
-            anime({
-                targets: statusElm,
-                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-                duration: animationTime,
-                easing: "linear",
-                complete: function(anim){
-                    if(newVal == "before"){
-                        statusElm.innerText = "配信開始までもうしばらくお待ちください。 Please wait a moment.";
-                    }
-                    else if (newVal == "after"){
-                        statusElm.innerText = "本日の配信は終了しました。 Thank you for Watching!";
-                    }
-                    else if (newVal == "interlude"){
-                        statusElm.innerText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
-                    }
-                    anime({
-                        targets: statusElm,
-                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                        duration: animationTime,
-                        easing: "linear",
-                    });
-                }
-            });
+            let tempText = ""
+            if(newVal == "before"){
+                tempText = "配信開始までもうしばらくお待ちください。 Please wait a moment.";
+            }
+            else if (newVal == "after"){
+                tempText = "本日の配信は終了しました。 Thank you for Watching!";
+            }
+            else if (newVal == "interlude"){
+                tempText = "休憩中… 配信再開は" + restartRep.value + "を予定しています。"
+            }
+            textFadeUpdate(tempText, document.getElementById("status-text"), document.getElementById("status-text"));
         });
+
         restartRep.on("change", (newValue) => {
             if(statusRep.value == "interlude"){
-                statusElm.innerText = "休憩中… 配信再開は" + newValue + "を予定しています。"
+                let tempText = "休憩中… 配信再開は" + newValue + "を予定しています。";
+                textFadeUpdate(tempText, document.getElementById("status-text"), document.getElementById("status-text"));
             }
         });
         playBackRep.on("change", newValue => {
-            const BGMTextElm = document.getElementById("bgm-text");
-            anime({
-                targets: BGMTextElm,
-                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-                duration: animationTime,
-                easing: "linear",
-                complete: function(anim){
-                    if (!newValue.playing){
-                        BGMTextElm.innerText = "Stopped";
-                    }
-                    else {
-                        if(newValue.artist !== ""){
-                            BGMTextElm.innerText = `${newValue.artist} -`;
-                        }
-                        else{
-                            BGMTextElm.innerText = "Unknown Artist -";
-                        }
-                        BGMTextElm.innerText += ` ${newValue.track}`;
-                        if(newValue.album !== ""){
-                            BGMTextElm.innerText += ` (from ${newValue.album})`
-                        }
-                    }
-                    anime({
-                        targets: BGMTextElm,
-                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                        duration: animationTime,
-                        easing: "linear",
-                    });
+            let tempText = ""
+            if (!newValue.playing){
+                tempText = "Stopped";
+            }
+            else {
+                if(newValue.artist !== ""){
+                    tempText = `${newValue.artist} -`;
                 }
-            });
+                else{
+                    tempText = "Unknown Artist -";
+                }
+                tempText += ` ${newValue.track}`;
+                if(newValue.album !== ""){
+                    tempText += ` (from ${newValue.album})`
+                }
+            }
+            textFadeUpdate(tempText, document.getElementById("bgm-text"), document.getElementById("bgm-text"))
+        });
+        
+        NodeCG.waitForReplicants(infoRep).then(() => {
+            ReplicantAnimCallback(infoRep,document.getElementById("info"),0);
         });
     </script>
     <style>
