@@ -19,8 +19,8 @@
         <div id="title-box"class="absolute border-stone-600 border-8 rounded-xl text-center overflow-hidden flex items-center justify-center textbox-bg title">
             <span id="title" class="font-jp"></span>
         </div>
-        <div id="right-box-upper" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box upper">
-            <div id="vc" class="text-[24px] font-jp absolute overflow-hidden top-2 left-2">
+        <div id="right-box-upper" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box upper overflow-hidden">
+            <div id="vc" class="text-[24px] font-jp absolute top-2 left-2">
             </div>
         </div>
         <div id="right-box-lower" class="absolute border-stone-600 border-8 rounded-xl textbox-bg right-box lower"></div>
@@ -61,7 +61,7 @@
         </div>    
     </body>
     <script>
-const scrollSpeed = 16;
+        const scrollSpeed = 16;
         const defaultFontSize = 32;
         const BGMdelay = 10000;
         const infoRep = nodecg.Replicant("frame-info");
@@ -238,6 +238,9 @@ const scrollSpeed = 16;
                 tmpElem.id = "";
                 tmpElem.firstElementChild.src = value.avatar;
                 tmpElem.lastElementChild.innerText = value.name;
+                if (value.speaking) {
+                    tmpElem.firstElementChild.classList.add("outline-emerald-500", "outline", "outline-4")
+                }
                 vcElem.appendChild(tmpElem);
             })
         });

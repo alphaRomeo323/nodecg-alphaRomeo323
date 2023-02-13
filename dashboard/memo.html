@@ -14,11 +14,14 @@
     </div>
 </body>
 <script>
-    const memoForm = document.forms.Memo;
+    const memoElm = document.getElementById("memo");
     const memoRep = nodecg.Replicant("memo")
     document.getElementById("apply").onclick = () =>
     {
-        memoRep.value = memoForm.memoText.value;
+        memoRep.value = memoElm.value;
     }
+    memoRep.on("change", newValue => {
+        memoElm.value = newValue;
+    });
 
 </script>
