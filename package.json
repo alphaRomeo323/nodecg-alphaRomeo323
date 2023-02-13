@@ -42,7 +42,7 @@
                 "file": "time.html"
             },
             {
-                "width": "4",
+                "width": "3",
                 "name": "memo",
                 "title": "Memo",
                 "file": "memo.html"
@@ -76,6 +76,12 @@
                 "name": "lock",
                 "title": "Lock",
                 "file": "lock.html"
+            },
+            {
+                "width": "3",
+                "name": "info",
+                "title": "Additional Information",
+                "file": "info.html"
             }
         ],
         "graphics": [

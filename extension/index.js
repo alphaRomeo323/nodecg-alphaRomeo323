@@ -28,4 +28,7 @@ module.exports = function (nodecg) {
     nodecg.Replicant("guests").on("change", () => {
         send(nodecg);
     })
+    nodecg.Replicant("additional-info").on("change", () => {
+        send(nodecg);
+    })
 }

@@ -2,6 +2,7 @@ module.exports = (nodecg) => {
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
     const descriptionRep = nodecg.Replicant("description");
     const guestsRep = nodecg.Replicant("guests");
+    const additionalInfo = nodecg.Replicant("additional-info");
     const guestHead = "ゲスト: "
     let frameInfo = [];
     let queueInfo = [];
@@ -38,6 +39,16 @@ module.exports = (nodecg) => {
         });
         frameInfo.push(Object.assign({}, info));
         queueInfo.push(Object.assign({}, info));
+    }
+    if(additionalInfo.value !== [] && typeof additionalInfo.value !== 'undefined'){
+        additionalInfo.value.forEach(element =>{
+            if(element.queue){
+                queueInfo.push(Object.assign({}, element));
+            }
+            if(element.frame){
+                frameInfo.push(Object.assign({}, element));
+            }
+        })
     }
     nodecg.Replicant("frame-info").value = frameInfo;
     nodecg.Replicant("queue-info").value = queueInfo;
