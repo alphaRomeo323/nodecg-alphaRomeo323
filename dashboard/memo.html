@@ -10,15 +10,18 @@
         <textarea name="memoText" id="memo" cols="40" rows="3"></textarea>
     </form>
     <div>
-	    <button id="apply">Apply</button>
+	    <button id="apply" style="font-size: large;">Apply</button>
     </div>
 </body>
 <script>
-    const memoForm = document.forms.Memo;
+    const memoElm = document.getElementById("memo");
     const memoRep = nodecg.Replicant("memo")
     document.getElementById("apply").onclick = () =>
     {
-        memoRep.value = memoForm.memoText.value;
+        memoRep.value = memoElm.value;
     }
+    memoRep.on("change", newValue => {
+        memoElm.value = newValue;
+    });
 
 </script>

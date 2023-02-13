@@ -86,7 +86,7 @@
     });
     const send = () => {
         let val = timeElm.value;
-        if(val != undefined){
+        if(typeof val !== "undefined"){
 		    timeRep.value = val;
         }
     }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Additional Infomation</title>
+</head>
+<body>
+    <ul id="info-list" class="info-list">
+    </ul>
+    <button type="button" id="btn-add">add</button>
+    <button type="button" id="btn-remove">remove</button>
+    <button id="btn-apply" style="font-size: large;">Apply</button>
+    <li id="info-template" class="hidden">
+        <form action="" method="get" class="form">
+            <section>
+                Display Location: 
+                <label for="location-1">Queue</label>
+                <input type="checkbox" name="queue" id="location-1" checked></imput>   
+                <label for="location-2">Frame</label>
+                <input type="checkbox" name="frame" id="location-2" checked></imput>
+            </section>
+            <section>
+                <textarea name="info" cols="35" rows="3"></textarea>
+            </section>
+            <section>
+                <label for="icon">Icon: </label>
+                <input type="text" name="icon" size="10" id="icon"></input>
+            </section>
+        </form>        
+    </li>
+</body>
+<script>
+    const infoList = document.getElementById("info-list");
+    const formAddBtn = document.getElementById("btn-add");
+    const formRemoveBtn = document.getElementById("btn-remove");
+    const applyBtn = document.getElementById("btn-apply");
+    const additInfoRep = nodecg.Replicant("additional-info");
+    let activeForms = 0;
+
+    NodeCG.waitForReplicants(additInfoRep).then(() => {
+        formRemoveBtn.disabled = true;
+        if (typeof additInfoRep.value === "undefined"){
+            additInfoRep.value = [];
+        }
+        for(let i=0; i < additInfoRep.value.length; i++){
+            addNewForm();
+            const currentForm = document.forms[i];
+            const currentInfo = additInfoRep.value[i];
+            currentForm.info.value = currentInfo.content;
+            currentForm.icon.value = currentInfo.materialIcon;
+            currentForm.queue.checked = currentInfo.queue;
+            currentForm.frame.checked = currentInfo.frame;
+        }
+
+        formAddBtn.onclick = () =>
+        {
+            addNewForm();
+        }
+        formRemoveBtn.onclick = () =>
+        {
+            infoList.removeChild(infoList.lastElementChild);
+            activeForms--;
+            if (activeForms === 0) formRemoveBtn.disabled = true;
+            send();
+        }
+        applyBtn.onclick = () =>{
+            send();
+        }
+    })
+    
+
+    
+    const addNewForm = () =>{
+        let tmpElem = document.getElementById("info-template").cloneNode(true);
+        tmpElem.id = "";
+        tmpElem.classList.remove("hidden");
+        tmpElem.firstElementChild.classList.add("guest-form");
+        infoList.appendChild(tmpElem);
+        activeForms++;
+        formRemoveBtn.disabled = false
+    }
+
+    const send = () => {
+        let temp = [];
+        for(let i=0; i<activeForms; i++){
+            const currentForm = document.forms[i];
+            temp.push({
+               "svg": "",
+               "materialIcon": currentForm.icon.value,
+               "content": currentForm.info.value,
+               "queue": currentForm.queue.checked,
+               "frame": currentForm.frame.checked,
+            });
+        }
+        additInfoRep.value = temp;
+    }
+</script>
+<style>
+    .hidden{
+        display: none;
+    }
+</style>

@@ -5,31 +5,97 @@
 	<title>Streamer</title>
 </head>
 <body>
-    <section>
+    <div>
         <label for="twitter-handle">Twitter @</label>
         <input type="text" id="twitter-handle" name="twitter-handle" size="20">
-    </section>
-    <section>
+    </div>
+    <div>
+        Guests:
+        <ul id="guest-list" class="guest-list">
+        </ul>
+        <button type="button" id="btn-add">add</button>
+        <button type="button" id="btn-remove">remove</button>
+    </div>
+    <div>
 	    <button id="apply">Apply</button>
-    </section>
+    </div>
+    <li id="guest-template" class="hidden">
+        <input type="text" name="guest"  size="20">
+    </li>
 </body>
 <script>
     const twitterHandleElm = document.getElementById("twitter-handle");
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
-    nodecg.Replicant("lock").on("change", (newValue) => {
-        if(newValue == "lock"){
-            twitterHandleElm.disabled = true;
+    const guestsRep = nodecg.Replicant("guests");
+    const guestList = document.getElementById("guest-list");
+    const guestAddBtn = document.getElementById("btn-add");
+    const guestRemoveBtn = document.getElementById("btn-remove");
+    const guestListElms = document.getElementsByClassName("guest-form")
+    const lockRep = nodecg.Replicant("lock");
+    NodeCG.waitForReplicants(guestsRep, twitterHandleRep, lockRep).then(() => {
+        guestRemoveBtn.disabled = true;
+        if (typeof guestsRep.value === "undefined"){
+            guestsRep.value = [];
         }
-        else{
-            twitterHandleElm.disabled = false;
-        }
-    });
-    document.getElementById("apply").onclick = () =>
-    {
-        twitterHandleRep.value = twitterHandleElm.value;
-    };
+        guestsRep.value.forEach(element => {
+            addNewGuestInput();
+            child = guestList.lastElementChild;
+            child.firstElementChild.value = element;
+        });
 
-    twitterHandleRep.on("change", (newValue) => {
-        twitterHandleElm.value = newValue;
-    });
+        nodecg.Replicant("lock").on("change", (newValue) => {
+            twitterHandleElm.disabled = newValue;
+            guestAddBtn.disabled = newValue;
+            guestRemoveBtn.disabled = newValue;
+            for(let i = 0;i < guestListElms.length; i++) guestListElms[i].disabled = newValue;
+        })
+        document.getElementById("apply").onclick = () => {
+            twitterHandleRep.value = twitterHandleElm.value;
+            updateGuests();
+        };
+
+        twitterHandleRep.on("change", (newValue) => {
+            twitterHandleElm.value = newValue;
+        });
+
+        guestAddBtn.onclick = () =>
+        {
+            addNewGuestInput();
+        };
+        guestRemoveBtn.onclick = () =>
+        {
+            guestList.removeChild(guestList.lastElementChild);
+            if (!guestList.lastElementChild) guestRemoveBtn.disabled = true;
+            updateGuests();
+        };
+
+    })
+
+    const addNewGuestInput = () => {
+        let tmpElem = document.getElementById("guest-template").cloneNode(true);
+        tmpElem.id = ""
+        tmpElem.classList.remove("hidden");
+        tmpElem.firstElementChild.classList.add("guest-form");
+        guestList.appendChild(tmpElem);
+        guestRemoveBtn.disabled = false;
+    }
+
+    const updateGuests = () => {
+        let tempArg = [];
+        for(let i = 0;i < guestListElms.length; i++){
+            tempArg.push(guestListElms[i].value);
+        }
+        guestsRep.value = tempArg;
+    };
+    
+
 </script>
+<style>
+    .hidden{
+        display: none;
+    }
+    .guest-list{
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+    }
+</style>
