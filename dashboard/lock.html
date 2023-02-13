@@ -19,16 +19,16 @@
     const isLock = document.getElementById("is-lock");
     const lockRep = nodecg.Replicant("lock");
     	document.getElementById("lock").onclick = () => {
-        if(lockRep.value == "lock"){
-            lockRep.value = "unlock";
+        if(lockRep.value){
+            lockRep.value = false;
         }
         else{
-            lockRep.value = "lock";
+            lockRep.value = true;
         }
 	};
 
     lockRep.on("change", (newValue) => {
-        if(lockRep.value == "lock"){
+        if(lockRep.value){
             isLock.innerText = "Unlock";
         }
         else{

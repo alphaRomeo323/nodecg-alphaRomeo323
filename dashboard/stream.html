@@ -39,36 +39,29 @@
     const lockRep = nodecg.Replicant("lock")
     
     NodeCG.waitForReplicants(titleRep,descriptionRep,startRep,endRep,lockRep).then(() => {
-        titleElm.value = titleRep.value
-        descriptionElm.value = descriptionRep.value
-        startElm.value = startRep.value
-        endElm.value = endRep.value
         lockRep.on("change", (newValue) => {
-            if(newValue == "lock"){
-                titleElm.disabled = true;
-                descriptionElm.disabled = true;
-                startElm.disabled = true;
-                endElm.disabled = true;
-            }
-            else{
-                titleElm.disabled = false;
-                descriptionElm.disabled = false;
-                startElm.disabled = false;
-                endElm.disabled = false;
-            }
+            titleElm.disabled = newValue;
+            descriptionElm.disabled = newValue;
+            startElm.disabled = newValue;
+            endElm.disabled = newValue;
         });
         document.getElementById("apply").onclick = () =>{
             titleRep.value = titleElm.value;
             descriptionRep.value = descriptionElm.value;
             startRep.value = startElm.value;
             endRep.value = endElm.value;
-        }
+        };
+        titleRep.on("change",newValue => {
+            titleElm.value = titleRep.value;
+        });
+        descriptionRep.on("change", newValue => {
+            descriptionElm.value = descriptionRep.value;
+        });
+        startRep.on("change", newValue => {
+            startElm.value = startRep.value;
+        })
+        endRep.on("change", newValue => {
+            endElm.value = endRep.value;
+        })
     });
-    
-
-
-
-
-
-
 </script>

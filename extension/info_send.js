@@ -1,6 +1,8 @@
 module.exports = (nodecg) => {
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
     const descriptionRep = nodecg.Replicant("description");
+    const guestsRep = nodecg.Replicant("guests");
+    const guestHead = "ゲスト: "
     let frameInfo = [];
     let queueInfo = [];
 
@@ -22,6 +24,20 @@ module.exports = (nodecg) => {
             'materialIcon': "description",
             'content': descriptionRep.value.replace(/\n/g," ")
         })
+    }
+    if(guestsRep.value !== [] && typeof guestsRep.value !== 'undefined'){
+        let info = {
+            'svg': "",
+            'materialIcon': "people",
+            'content': guestHead
+        }
+        guestsRep.value.forEach(element => {
+            if (info.content !== guestHead)
+                info.content += " / ";
+            info.content += element;
+        });
+        frameInfo.push(info);
+        queueInfo.push(info);
     }
     nodecg.Replicant("frame-info").value = frameInfo; 
 }
