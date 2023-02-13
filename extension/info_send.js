@@ -36,8 +36,9 @@ module.exports = (nodecg) => {
                 info.content += " / ";
             info.content += element;
         });
-        frameInfo.push(info);
-        queueInfo.push(info);
+        frameInfo.push(Object.assign({}, info));
+        queueInfo.push(Object.assign({}, info));
     }
-    nodecg.Replicant("frame-info").value = frameInfo; 
+    nodecg.Replicant("frame-info").value = frameInfo;
+    nodecg.Replicant("queue-info").value = queueInfo;
 }

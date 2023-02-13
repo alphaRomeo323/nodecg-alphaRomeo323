@@ -10,9 +10,8 @@
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <link href="frame.css" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>-->
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="common.js"></script>
     </head>
     <body class="m-0 w-screen h-screen overflow-hidden text-[32px]">
         <div class="absolute greenback border-stone-400 rounded-br-lg drop-shadow-lg"></div>
@@ -35,7 +34,8 @@
         <div class="absolute logo top-8">
             <img id="logo">
         </div>
-        <div id="current" class="absolute backdrop-blur-md bg-slate-200/50 top-8 right-0 current rounded-l-lg overflow-hidden hidden">
+        <div class="m-0 w-screen h-screen overflow-hidden" id="current"></div>
+        <div id="current-temp" class="absolute backdrop-blur-md bg-slate-200/50 current rounded-l-lg overflow-hidden hidden top-8 right-0">
             <div class="font-jp ml-1">
                 <section>
                     <span class="material-icons align-sub text-4xl mr-2">queue_music</span>
@@ -50,170 +50,38 @@
             </div>
         </div>    
     </body>
-    <script>
-        const scrollSpeed = 16;
-        const defaultFontSize = 32;
-        const BGMdelay = 10000;
+    <script type="module">
+        import {clock, textFadeUpdate} from "./js/common.js"
+        import anime from "../node_modules/animejs/lib/anime.es.js"
+        import {currentTrackUpdate} from "./js/playback_anime.js"
+        import {ReplicantScrollCallback} from "./js/anime_callback.js"
+    
         const infoRep = nodecg.Replicant("frame-info");
         const playBackRep = nodecg.Replicant("playback");
-        var current;
+        
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
 
         nodecg.Replicant("title").on("change", (newValue) => {
-            const titleElm = document.getElementById("title-box");
-            const titleText = document.getElementById("title");
-            anime({
-                targets: titleText,
-                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-                duration: 1000,
-                easing: "linear",
-                complete: function(anim) {
-                    if ( newValue != undefined){
-                        titleText.innerText = newValue
-                        titleElm.style.fontSize = '56px';
-                        for(
-                            size = 56;
-                            titleElm.getBoundingClientRect().height < titleElm.scrollHeight && size > 12;
-                            size--
-                        ) {
-                            titleElm.style.fontSize = size + 'px';
-                        }
-                    }
-                    anime({
-                        targets: titleText,
-                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                        duration: 1000,
-                        delay: 500,
-                        easing: "linear",
-                    });
-                }
-            });
+            textFadeUpdate(newValue, document.getElementById("title"), document.getElementById("title-box"), 56);
         });
+
         nodecg.Replicant("memo").on("change", (newValue) => {
-            const bottomBoxElm = document.getElementById("bottom-box-text");
-            const bottomBoxText = document.getElementById("memo");
-            anime({
-                targets: bottomBoxText,
-                opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-                duration: 1000,
-                easing: "linear",
-                complete: function(anim) {
-                    if ( newValue != undefined){
-                        bottomBoxText.innerText = newValue
-                        bottomBoxElm.style.fontSize = '56px';
-                        for(
-                            size = 56;
-                            bottomBoxElm.getBoundingClientRect().height < bottomBoxElm.scrollHeight && size > 12;
-                            size--
-                        ) {
-                            bottomBoxElm.style.fontSize = size + 'px';
-                        }
-                    }
-                    anime({
-                        targets: bottomBoxText,
-                        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-                        duration: 1000,
-                        easing: "linear",
-                        delay: 500
-                    });
-                }
-            });
+            textFadeUpdate(newValue, document.getElementById("bottom-box-text"), document.getElementById("memo"), 48);
         });
+        
         nodecg.Replicant("logo").on("change", (newValue) => {
             if(newValue != undefined){
                 document.getElementById("logo").src = newValue;
             }
         });
-
-        function watchValue(obj, propName, func) {
-            let value = obj[propName];
-            Object.defineProperty(obj, propName, {
-                get: () => value,
-                set: newValue => {
-                    value = newValue;
-                    func(newValue);
-                },
-                configurable: true
-            });
-        }
         NodeCG.waitForReplicants(infoRep).then(() => {
-            const current = {value : null};
-            const animElm = document.getElementById("animation-text")
-
-            function onChange(newValue){
-                if (newValue >= infoRep.value.length){
-                    current.value = 0;
-                    return;
-                }
-                const newInfo = infoRep.value[newValue];
-                let messageLength = 0;
-                let tempHTML = ''
-                if (newInfo.svg !== ''){
-                    messageLength += 2;
-                    tempHTML += `<img src="svg/${newInfo.svg}" class="h-8 float-left mt-3 mr-2">`
-                }
-                else if(newInfo.materialIcon !== '') {
-                    messageLength += 2;
-                    tempHTML += `<span class="material-icons align-sub text-4xl mr-2">${newInfo.materialIcon}</span>`
-                }
-                messageLength += newInfo.content.length
-                tempHTML += newInfo.content;
-
-                animElm.innerHTML = tempHTML;
-                
-                anime({
-                    targets: animElm,
-                    translateX: [{ value: window.innerWidth, duration: 0 }, { value: -1 * defaultFontSize * messageLength }],
-                    easing: "linear",
-                    duration: scrollSpeed * ( window.innerWidth + defaultFontSize * messageLength),
-                    complete: function(anim){
-                        current.value++;
-                    }
-                })
-            }
-            Object.getOwnPropertyNames(current).forEach(propName => watchValue(current, propName, onChange));
-            if(infoRep !== undefined)
-                current.value = 0;
-            
+            ReplicantScrollCallback(infoRep, document.getElementById("animation-text"), 0);
         })
+        
         NodeCG.waitForReplicants(playBackRep).then(() =>{
-            const currentBGMElm = document.getElementById("current");
-            const trackNameElm = document.getElementById("track-name");
-            const trackArtistElm = document.getElementById("track-artist");
-            const trackAlbumElm = document.getElementById("track-album");
-            playBackRep.on("change",(newValue) =>{
-                trackArtistElm.innerText = "";
-                trackAlbumElm.innerText = "";
-                if (newValue.playing === false){
-                    trackNameElm.innerText = "Stopped"
-                    return;
-                }
-                trackNameElm.innerText = newValue.track;
-                if (newValue.artist !== "")
-                    trackArtistElm.innerText = `by ${newValue.artist}`;
-                if (newValue.album !== "")
-                    trackAlbumElm.innerText = `from ${newValue.album}`;
-                if (tl === undefined)
-                    currentBGMElm.classList.remove("hidden");
-                else tl.remove(currentBGMElm);
-                var tl = anime.timeline({
-                easing: 'easeOutExpo',
-                duration: 750,
-                });
-                tl.add({
-                    targets:currentBGMElm,
-                    translateX: [{ value: 380, duration: 0 }, { value: 0 }],
-                    duration: 1000,
-                });
-                tl.add({
-                    targets:currentBGMElm,
-                    translateX: 380,
-                    duration: 1000,
-                    delay: BGMdelay,
-                });
-            });
+            currentTrackUpdate(playBackRep);
         })
     </script>
 </html>
