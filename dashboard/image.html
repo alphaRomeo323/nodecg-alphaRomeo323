@@ -7,8 +7,6 @@
 <body>
 	
 	<section>
-		Press "Reload" to get the asset list.
-		<button id="reload">Reload</button>
 		<button id="apply">Apply</button>
 	</section>
 	<section>
@@ -23,55 +21,55 @@
 <script>
 	const logoElm = document.getElementById("logos");
 	const backgroundElm = document.getElementById("backgrounds")
-	const reloadElm = document.getElementById("reload");
 	const applyElm = document.getElementById("apply");
 	const logoRep = nodecg.Replicant("logo");
     const logoAsset = nodecg.Replicant("assets:logos");
 	const backgroundRep = nodecg.Replicant("background");
 	const backgroundAsset = nodecg.Replicant("assets:backgrounds");
 	const lockRep = nodecg.Replicant("lock");
-	nodecg.waitForReplicants(logoRep, backgroundRep, logoAsset, backgroundAsset, lockRep).then(() => {
+	NodeCG.waitForReplicants(logoRep, backgroundRep, logoAsset, backgroundAsset, lockRep).then(() => {
 		lockRep.on("change", (newValue) => {
             logoElm.disabled = newValue;
             backgroundElm.disabled = newValue;
-            reloadElm.disabled = newValue;
             applyElm.disabled = newValue;
         });
 		applyElm.onclick = () => {
 			send();
 		}
-		const run = () => {
-			logoAsset.on('change', newVal => {
-				if(newVal != undefined) {
-					for (const assetKey of newVal) {
-						let option = document.createElement("option");
-						option.text = assetKey.name;
-						option.value = assetKey.url;
-						logoElm.appendChild(option.cloneNode(true));
-					}
+		logoAsset.on('change', newVal => {
+			let child = logoElm.lastElementChild;
+			while(child){
+				logoElm.removeChild(child)
+				child = logoElm.lastElementChild;
+			}
+			if(newVal != undefined) {
+				for (const assetKey of newVal) {
+					let option = document.createElement("option");
+					option.text = assetKey.name;
+					option.value = assetKey.url;
+					logoElm.appendChild(option.cloneNode(true));
 				}
-			});
-			backgroundAsset.on('change', newVal => {
-				if(newVal != undefined) {
-					for (const assetKey of newVal) {
-						let option = document.createElement("option");
-						option.text = assetKey.name;
-						option.value = assetKey.url;
-						backgroundElm.appendChild(option.cloneNode(true));
-					}
+			}
+		});
+		backgroundAsset.on('change', newVal => {
+			let child = backgroundElm.lastElementChild;
+			while(child){
+				backgroundElm.removeChild(child)
+				child = backgroundElm.lastElementChild;
+			}
+			if(newVal != undefined) {
+				for (const assetKey of newVal) {
+					let option = document.createElement("option");
+					option.text = assetKey.name;
+					option.value = assetKey.url;
+					backgroundElm.appendChild(option.cloneNode(true));
 				}
-			});
-		}
+			}
+		});
 		const send = () => {
 			logoRep.value = logoElm.selectedOptions[0].value;
 			backgroundRep.value = backgroundElm.selectedOptions[0].value;
 		}
-		reloadElm.onclick = () => {
-		logoElm.innerHTML="";
-			backgroundElm.innerHTML = "";
-			run();
-		}
-		run();
 	});
 </script>
 </html>
