@@ -46,6 +46,7 @@ module.exports = (nodecg) => {
                 queueInfo.push(Object.assign({}, element));
             }
             if(element.frame){
+                element.content = element.content.replace(/\n/g," ")
                 frameInfo.push(Object.assign({}, element));
             }
         })
