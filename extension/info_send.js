@@ -7,7 +7,7 @@ module.exports = (nodecg) => {
     let frameInfo = [];
     let queueInfo = [];
 
-    if(twitterHandleRep.value !== '' && twitterHandleRep.value != undefined){
+    if(typeof twitterHandleRep.value === 'string' && twitterHandleRep.value !== ''){
         frameInfo.push({ 
             'svg': "twitter_logo_black.svg",
             'materialIcon': "",
@@ -19,14 +19,14 @@ module.exports = (nodecg) => {
             'content': "@"+twitterHandleRep.value
         })
     }
-    if(descriptionRep.value !== '' && descriptionRep.value != undefined){
+    if(typeof descriptionRep.value === 'string' && descriptionRep.value != undefined){
         frameInfo.push({ 
             'svg': "",
             'materialIcon': "description",
             'content': descriptionRep.value.replace(/\n/g," ")
         })
     }
-    if(guestsRep.value !== [] && typeof guestsRep.value !== 'undefined'){
+    if(typeof guestsRep.value === 'object' && guestsRep.value !== []){
         let info = {
             'svg': "",
             'materialIcon': "people",
@@ -40,7 +40,7 @@ module.exports = (nodecg) => {
         frameInfo.push(Object.assign({}, info));
         queueInfo.push(Object.assign({}, info));
     }
-    if(additionalInfo.value !== [] && typeof additionalInfo.value !== 'undefined'){
+    if(typeof additionalInfo.value === 'object' &&  additionalInfo.value !== []){
         additionalInfo.value.forEach(element =>{
             if(element.queue){
                 queueInfo.push(Object.assign({}, element));
