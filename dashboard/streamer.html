@@ -34,7 +34,7 @@
     const lockRep = nodecg.Replicant("lock");
     NodeCG.waitForReplicants(guestsRep, twitterHandleRep, lockRep).then(() => {
         guestRemoveBtn.disabled = true;
-        if (typeof guestsRep.value === "undefined"){
+        if (typeof guestsRep.value !== "object"){
             guestsRep.value = [];
         }
         guestsRep.value.forEach(element => {
