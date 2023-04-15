@@ -4,7 +4,7 @@
     "author": "alphaRomeo323",
     "license": "MIT",
     "nodecg": {
-        "compatibleRange": "^1.0.0",
+        "compatibleRange": "^2.0.0",
         "assetCategories": [
             {
                 "name": "streams",

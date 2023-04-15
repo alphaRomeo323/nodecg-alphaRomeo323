@@ -2,6 +2,9 @@ import anime from "../../node_modules/animejs/lib/anime.es.js"
 
 export const YoutubeChatOverlay = (nodecg) => {
     nodecg.Replicant("chat", 'nodecg-livechat').on("change", (newValue) => {
+        if (typeof newValue === "undefined"){
+            return;
+        }
         if (newValue.platform !== "youtube"){
             return;
         }
