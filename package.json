@@ -4,7 +4,7 @@
     "author": "alphaRomeo323",
     "license": "MIT",
     "nodecg": {
-        "compatibleRange": "^1.0.0",
+        "compatibleRange": "^2.0.0",
         "assetCategories": [
             {
                 "name": "streams",
@@ -31,6 +31,15 @@
                     "jpg",
                     "jpeg",
                     "svg"
+                ]
+            },
+            {
+                "name": "op",
+                "title": "Opening Videos",
+                "allowedTypes": [
+                    "mp4",
+                    "mkv",
+                    "webm"
                 ]
             }
         ],
@@ -96,7 +105,17 @@
                 "height": 1080
             },
             {
+                "file": "frame2.html",
+                "width": 1920,
+                "height": 1080
+            },
+            {
                 "file": "queue.html",
+                "width": 1920,
+                "height": 1080
+            },
+            {
+                "file": "switcher.html",
                 "width": 1920,
                 "height": 1080
             }

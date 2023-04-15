@@ -26,8 +26,9 @@ export const ChatOverlay = (nodecg) => {
         const chatElem = document.getElementById("chat");
         let tmpElem = document.getElementById("chat-template").cloneNode(true);
         tmpElem.classList.remove("hidden")
+        tmpElem.lastElementChild.classList.add("bg-indigo-200/50")
         tmpElem.id = "";
-        if( newValue.avatar != ""){
+        if( newValue.avatar !== ""){
             tmpElem.firstElementChild.src = newValue.avatar;
         }
         tmpElem.lastElementChild.innerText = newValue.content;

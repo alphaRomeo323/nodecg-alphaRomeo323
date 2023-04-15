@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>frame</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap"
+            rel="stylesheet"
+        />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <div id="vc-template" class="align-middle hidden text-left p-1">
+            <img class="rounded-full inline bg-white shadow"
+                src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a69f118df70ad7828d4_icon_clyde_blurple_RGB.svg"
+                width="48" height="48" />
+            <div class="bg-sky-200/50 px-3 mr-2 rounded-xl shadow inline-block align-middle font-jp">Anonymous</div>
+        </div>
+        <div id="current-temp" class="absolute backdrop-blur-md bg-slate-200/75 w-[380px] h-[150px] rounded-l-lg overflow-hidden hidden top-20 right-0">
+            <div class="font-jp ml-1 text-[32px]">
+                <section>
+                    <span class="material-icons align-sub text-4xl mr-2">queue_music</span>
+                    <span id="track-name"></span>
+                </section>
+                <section>
+                    <span id="track-artist"></span>
+                </section>
+                <section>
+                    <span id="track-album"></span>
+                </section>
+            </div>
+        </div>
+        <div id="chat-template" class="align-middle hidden text-left p-1 flex items-end">
+            <img class="rounded-full inline bg-white shadow align-middle my-1"
+                src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a69f118df70ad7828d4_icon_clyde_blurple_RGB.svg"
+                width="40" height="40" />
+            <div
+                class="rounded-t-2xl rounded-br-2xl shadow align-middle inline-block text-left leading-tight p-2 font-jp ml-2">Test</div>
+        </div>
+        <!--Left Top-->
+        <div id="vc" class="text-[24px] absolute overflow-hidden left-0 p-4">
+        </div>
+        <!--Left Bottom-->
+        <div id="chat" class="text-[24px] absolute overflow-hidden bottom-5 left-0 pl-4 break-all w-[500px]">
+        </div>
+        <!--Right Top-->
+        <div class="absolute bg-slate-200/75 px-4 rounded-full align-middle overflow-hidden shadow top-4 right-4">
+            <span class="material-icons text-3xl align-sub">schedule</span>
+            <span id="clock" class="font-jp text-[32px]"></span>
+        </div>
+        <div class="m-0 w-screen h-screen overflow-hidden" id="current">
+        </div>
+        <!--Right Bottom-->
+        <img id="logo" class="absolute bottom-2 right-4 hidden">
+        
+    </body>
+    <script type="module">
+        import {clock, textFadeUpdate} from "./js/common.js"
+        import anime from "../node_modules/animejs/lib/anime.es.js"
+        import {VoiceOverlay, ChatOverlay} from "./js/discord_overlay.js"
+        import {YoutubeChatOverlay} from "./js/youtube_chat.js"
+        import {currentTrackUpdate} from "./js/playback_anime.js"
+
+        const vcRep = nodecg.Replicant("vc", 'nodecg-discord-utils');
+        const DiscordChatRep = nodecg.Replicant("chat", 'nodecg-discord-utils');
+        const LiveChatRep = nodecg.Replicant("chat", 'nodecg-livechat');
+        const playBackRep = nodecg.Replicant("playback");
+        const LogoElm = document.getElementById("logo");
+
+        setInterval(() => {
+            clock(document.getElementById("clock"));
+        }, 1000);
+
+        NodeCG.waitForReplicants(vcRep).then(() => {
+            VoiceOverlay(nodecg);
+        });
+
+        NodeCG.waitForReplicants(DiscordChatRep).then(() => {
+            ChatOverlay(nodecg);
+        });
+
+        NodeCG.waitForReplicants(LiveChatRep).then(() => {
+            YoutubeChatOverlay(nodecg);
+        });
+
+        nodecg.Replicant("logo").on("change", (newValue) => {
+            if(newValue != undefined){
+                LogoElm.src = newValue;
+            }
+        });
+
+        nodecg.Replicant("logo-size").on("change", (newValue) => {
+            LogoElm.style.width = newValue + 'px'
+        });
+
+        NodeCG.waitForReplicants(playBackRep).then(() =>{
+            currentTrackUpdate(playBackRep);
+        })
+
+        nodecg.Replicant("logo-hide").on("change", (newValue) => {
+            if (newValue){
+                anime({
+		            targets: LogoElm,
+		            opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+		            duration: 1000,
+		            easing: "linear",
+                    complete: () => {
+                        LogoElm.classList.add("hidden")
+                    }
+                })
+            }
+            else{
+                LogoElm.classList.remove("hidden")
+                anime({
+		            targets: LogoElm,
+		            opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+		            duration: 1000,
+		            easing: "linear",
+                })
+            }
+        })
+    </script>
+    <style>
+        .font-jp {
+            font-family: "M PLUS Rounded 1c", sans-serif;
+        }
+    </style>
+</html>

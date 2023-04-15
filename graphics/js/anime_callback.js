@@ -15,7 +15,7 @@ export const staticAnimCallback = (arg, targetElm, current) => {
         console.log(arg[current]);
         document.getElementById("anim-icon").innerText = arg[current].icon;
         document.getElementById("anim-text").innerText = arg[current].detail;
-        if(current === techs.length - 1) {
+        if(current === arg.length - 1) {
             current = 0;
         } else {
             current++;
@@ -56,8 +56,7 @@ export const ReplicantScrollCallback = (replicant, targetElm, current) => {
     let messageLength = 0;
     let tempHTML = "";
     if (newValue.svg !== ''){
-        tempHTML += `<img src="svg/${newValue.svg}" class="h-8 float-left mt-3 mr-2">`
-        messageLength += 2;
+        tempHTML += `<img src="svg/${newValue.svg}" class="h-6 float-left mt-2 mr-2">`
     }
     else if(newValue.materialIcon !== '') {
         tempHTML += `<span class="material-icons align-sub text-4xl mr-2">${newValue.materialIcon}</span>`

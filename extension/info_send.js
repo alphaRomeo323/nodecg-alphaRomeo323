@@ -26,7 +26,7 @@ module.exports = (nodecg) => {
             'content': descriptionRep.value.replace(/\n/g," ")
         })
     }
-    if(typeof guestsRep.value === 'object' && guestsRep.value !== []){
+    if(typeof guestsRep.value === 'object' && guestsRep.value.length > 0){
         let info = {
             'svg': "",
             'materialIcon': "people",
