@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="m-0 p-0">
+    <head>
+        <meta charset="UTF-8" />
+        <title>switcher</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap"
+            rel="stylesheet"
+        />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    </head>
+    <body class="m-0 w-[1920px] h-[1080px] overflow-hidden text-white text-8xl">
+        <div id="backscreen" name="opening" class="border-0 bg-black absolute w-[1920px] h-[1080px hidden">
+            <video id="opening-video" name="opening" width="1920">
+                <source id="video-source" type="video/mp4">
+            </video>
+        </div>
+        <iframe src="/bundles/nodecg-alpharomeo-stream/graphics/queue.html" id="queue" class="border-0 absolute w-[1920px] h-[1080px]"></iframe>
+        
+    </body>
+    <script>
+        const queueElm = document.getElementById("queue");
+        const backScreenElm = document.getElementById("backscreen");
+        const videoElm = document.getElementById("opening-video");
+        const opRep = nodecg.Replicant("op");
+        const statusRep = nodecg.Replicant("status");
+        const switchRep = nodecg.Replicant("switch");
+        let switchval = "queue";
+
+        NodeCG.waitForReplicants(opRep, statusRep, switchRep).then(() => {
+            opRep.on("change", newValue => {
+                document.getElementById('video-source').setAttribute('src', newValue);
+                videoElm.load();
+            })
+
+            nodecg.Replicant("switch").on("change", (newValue) => {
+                if (switchval === newValue){
+                    return;
+                };
+                switchval = newValue;
+                if (newValue === "queue"){
+                    queueElm.classList.remove("hidden")
+                    anime({
+		                targets: queueElm,
+		                opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+		                duration: 1000,
+		                easing: "linear",
+                    })
+                }
+                else{
+                    if(nodecg.Replicant("status").value === "before"){
+                        backScreenElm.classList.remove("hidden");
+                        backScreenElm.style.opacity = 1;
+                        anime({
+		                    targets: queueElm,
+		                    opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+		                    duration: 1000,
+		                    easing: "linear",
+                            begin: () => {
+                                setTimeout(function(){
+                                    videoElm.play();
+                                }, 1000);
+                            },
+                            complete: () => {
+                                queueElm.classList.add("hidden");
+                            }
+                        })
+                    }
+                    else {
+                        anime({
+		                    targets: queueElm,
+		                    opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+		                    duration: 1000,
+		                    easing: "linear",
+                            complete: () => {
+                                queueElm.classList.add("hidden")
+                            }
+                        })
+                    }
+                }
+            
+            });
+
+            videoElm.addEventListener("ended", () => {
+                anime({
+		            targets: backScreenElm,
+		            opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+		            duration: 1000,
+		            easing: "linear",
+                    complete: () => {
+                        backScreenElm.classList.add("hidden");
+                        videoElm.currentTime = 0;
+                    }
+                })
+            })
+        });
+    </script>
+</html>

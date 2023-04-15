@@ -32,6 +32,15 @@
                     "jpeg",
                     "svg"
                 ]
+            },
+            {
+                "name": "op",
+                "title": "Opening Videos",
+                "allowedTypes": [
+                    "mp4",
+                    "mkv",
+                    "webm"
+                ]
             }
         ],
         "dashboardPanels": [
@@ -96,7 +105,17 @@
                 "height": 1080
             },
             {
+                "file": "frame2.html",
+                "width": 1920,
+                "height": 1080
+            },
+            {
                 "file": "queue.html",
+                "width": 1920,
+                "height": 1080
+            },
+            {
+                "file": "switcher.html",
                 "width": 1920,
                 "height": 1080
             }

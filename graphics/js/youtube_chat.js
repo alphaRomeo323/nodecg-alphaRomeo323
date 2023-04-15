@@ -1,37 +1,34 @@
 import anime from "../../node_modules/animejs/lib/anime.es.js"
 
-export const VoiceOverlay = (nodecg) => {
-    nodecg.Replicant("vc", 'nodecg-discord-utils').on("change", (newValue) => {
-        const vcElem = document.getElementById("vc");
-        let child = vcElem.lastElementChild;
-        while (child) {
-            vcElem.removeChild(child);
-            child = vcElem.lastElementChild;
+export const YoutubeChatOverlay = (nodecg) => {
+    nodecg.Replicant("chat", 'nodecg-livechat').on("change", (newValue) => {
+        if (newValue.platform !== "youtube"){
+            return;
         }
-        newValue.forEach((value) => {
-            let tmpElem = document.getElementById("vc-template").cloneNode(true);
-            tmpElem.classList.remove("hidden")
-            tmpElem.id = "";
-            tmpElem.firstElementChild.src = value.avatar;
-            tmpElem.lastElementChild.innerText = value.name;
-            if (value.speaking) {
-                tmpElem.firstElementChild.classList.add("outline-emerald-500", "outline", "outline-4")
-            }
-            vcElem.appendChild(tmpElem);
-        })
-    });
-}
-export const ChatOverlay = (nodecg) => {
-    nodecg.Replicant("chat", 'nodecg-discord-utils').on("change", (newValue) => {
         const chatElem = document.getElementById("chat");
         let tmpElem = document.getElementById("chat-template").cloneNode(true);
         tmpElem.classList.remove("hidden")
-        tmpElem.lastElementChild.classList.add("bg-indigo-200/50")
+        tmpElem.lastElementChild.classList.add("bg-rose-200/50")
         tmpElem.id = "";
         if( newValue.avatar != ""){
             tmpElem.firstElementChild.src = newValue.avatar;
         }
-        tmpElem.lastElementChild.innerText = newValue.content;
+        let MessageTemp = ""
+        newValue.message.forEach(element => {
+            if ( typeof element.text !== "undefined"){
+                MessageTemp += element.text
+            }
+            else if( typeof element.emojiText !== "undefined"){
+                if (element.isCustomEmoji === true){
+                    MessageTemp += `<img src="${element.url}" class="h-8">`
+                }
+                else {
+                    MessageTemp += element.emojiText
+                }
+                
+            }
+        });
+        tmpElem.lastElementChild.innerHTML = MessageTemp;
         const newelm = chatElem.appendChild(tmpElem);
         let tl = anime.timeline({
             easing: 'easeOutExpo',
