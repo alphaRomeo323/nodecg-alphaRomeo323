@@ -20,8 +20,10 @@ export const currentTrackUpdate = (replicant) => {
         trackNameElm.innerText = newValue.track;
         if (newValue.artist !== "")
             trackArtistElm.innerText = `by ${newValue.artist}`;
+        else trackArtistElm.innerText = "";
         if (newValue.album !== "")
             trackAlbumElm.innerText = `from ${newValue.album}`;
+        else trackAlbumElm.innerText = "";
         let tmpElem = currentBGMElm.cloneNode(true);
         tmpElem.classList.remove("hidden");
         tmpElem.id = "current-anime"
