@@ -11,14 +11,12 @@
         <link href="https://fonts.googleapis.com/css?family=Sawarabi+Gothic" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     </head>
     <body class="m-0 p-0 w-screen h-screen bg-black overflow-hidden text-4xl text-white">
         <div class="absolute w-[1920px] h-[1080px] border-2 -z-20 border-black"></div>
         <div class="absolute w-screen h-screen overflow-hidden -z-30 brightness-50">
             <img class="object-cover w-screen h-screen" id="background"/>
         </div>
-        <div id="particles-js" class="absolute m-0 w-screen h-screen overflow-hidden -z-10"></div>
         <div id="logo" class="pt-16 pl-20">
             <img id="logo-img" class="h-48">
         </div>
@@ -32,17 +30,30 @@
         <div id="info" class="tech-anime mt-14 ml-20 text-3xl font align-middle">
         </div>
         <div class="absolute top-[480px] mx-40 h-[320px]">
-            <div class="mt-10" id="title">
-                <span class="material-icons align-sub text-6xl inline-block">navigate_next</span>
-                <span id="title-text" class="font text-6xl tracking-wide"></span>
+            <div class="mt-10 flex" id="title">
+                <div class="flex-none w-16">
+                    <span class="material-icons align-sub text-6xl inline-block">navigate_next</span>
+                </div>
+                <div class="flex-1">
+                    <span id="title-text" class="font text-6xl tracking-wide"></span>
+                </div>
             </div>
-            <div class="mt-10" title="time">
-                <span class="material-icons align-sub text-5xl">access_time</span>
-                <span id="time-text" class="text-5xl font tracking-wide"></span>
+            <div class="mt-10 flex" title="time">
+                <div class="flex-none w-16">
+                    <span class="material-icons align-sub text-5xl">access_time</span>
+                </div>
+                <div class="flex-1">
+                    <span id="time-text" class="text-5xl font tracking-wide"></span>
+                </div>
             </div>
-            <div class="mt-10" title="detail">
-                <span class="material-icons align-sub text-5xl">description</span>
-                <span id="detail-text" class="text-4xl font tracking-wide"></span>
+            <div class="mt-10 flex" title="detail">
+                <div class="flex-none w-16">
+                    <span class="material-icons align-sub text-5xl">description</span>
+                </div>
+                <div class="flex-1">
+                    <span id="detail-text" class="text-4xl font tracking-wide"></span>
+                </div>
+                
             </div>
         </div>
         <div id="bgm" class="absolute bottom-10 ml-20">
@@ -63,9 +74,6 @@
         const playBackRep = nodecg.Replicant("playback");
         const infoRep = nodecg.Replicant("queue-info");
 
-        particlesJS.load("particles-js", "particlesjs-config3.json", function () {
-            console.log("callback - particles.js config loaded");
-        });
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
