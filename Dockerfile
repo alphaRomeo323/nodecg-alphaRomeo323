@@ -1,8 +1,15 @@
 FROM node:alpine
 WORKDIR /opt/nodecg
-RUN apk add --no-cache git make gcc g++ python3 && npm install --global nodecg-cli && nodecg setup && nodecg install alphaRomeo323/nodecg-discord-utils && nodecg install alphaRomeo323/nodecg-livechat
+RUN apk add --no-cache --virtual .builddeps git make gcc g++ python3 && npm install --global nodecg-cli pnpm && nodecg setup && npm uninstall --global nodecg-cli
+WORKDIR /opt/nodecg/bundles
+RUN git clone --depth 1 https://github.com/alphaRomeo323/nodecg-discord-utils.git && git clone --depth 1 https://github.com/alphaRomeo323/nodecg-livechat.git
+WORKDIR /opt/nodecg/bundles/nodecg-discord-utils
+RUN pnpm install
+WORKDIR /opt/nodecg/bundles/nodecg-livechat
+RUN pnpm install
 COPY . /opt/nodecg/bundles/nodecg-alpharomeo-stream/
 WORKDIR /opt/nodecg/bundles/nodecg-alpharomeo-stream
-RUN npm install && apk del --purge make gcc g++ python3 git
+RUN pnpm install
 WORKDIR /opt/nodecg
-ENTRYPOINT nodecg start
+RUN apk del --purge .builddeps
+ENTRYPOINT node index.js
