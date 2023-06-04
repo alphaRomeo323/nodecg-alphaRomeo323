@@ -10,18 +10,8 @@
         <input type="text" id="twitter-handle" name="twitter-handle" size="20">
     </div>
     <div>
-        Guests:
-        <ul id="guest-list" class="guest-list">
-        </ul>
-        <button type="button" id="btn-add">add</button>
-        <button type="button" id="btn-remove">remove</button>
-    </div>
-    <div>
 	    <button id="apply">Apply</button>
     </div>
-    <li id="guest-template" class="hidden">
-        <input type="text" name="guest"  size="20">
-    </li>
 </body>
 <script>
     const twitterHandleElm = document.getElementById("twitter-handle");
@@ -32,61 +22,20 @@
     const guestRemoveBtn = document.getElementById("btn-remove");
     const guestListElms = document.getElementsByClassName("guest-form")
     const lockRep = nodecg.Replicant("lock");
-    NodeCG.waitForReplicants(guestsRep, twitterHandleRep, lockRep).then(() => {
-        guestRemoveBtn.disabled = true;
-        if (typeof guestsRep.value !== "object"){
-            guestsRep.value = [];
-        }
-        guestsRep.value.forEach(element => {
-            addNewGuestInput();
-            child = guestList.lastElementChild;
-            child.firstElementChild.value = element;
-        });
+    NodeCG.waitForReplicants( witterHandleRep, lockRep).then(() => {
 
         nodecg.Replicant("lock").on("change", (newValue) => {
             twitterHandleElm.disabled = newValue;
-            guestAddBtn.disabled = newValue;
-            guestRemoveBtn.disabled = newValue;
-            for(let i = 0;i < guestListElms.length; i++) guestListElms[i].disabled = newValue;
         })
         document.getElementById("apply").onclick = () => {
             twitterHandleRep.value = twitterHandleElm.value;
-            updateGuests();
         };
-
         twitterHandleRep.on("change", (newValue) => {
             twitterHandleElm.value = newValue;
         });
 
-        guestAddBtn.onclick = () =>
-        {
-            addNewGuestInput();
-        };
-        guestRemoveBtn.onclick = () =>
-        {
-            guestList.removeChild(guestList.lastElementChild);
-            if (!guestList.lastElementChild) guestRemoveBtn.disabled = true;
-            updateGuests();
-        };
-
-    })
-
-    const addNewGuestInput = () => {
-        let tmpElem = document.getElementById("guest-template").cloneNode(true);
-        tmpElem.id = ""
-        tmpElem.classList.remove("hidden");
-        tmpElem.firstElementChild.classList.add("guest-form");
-        guestList.appendChild(tmpElem);
-        guestRemoveBtn.disabled = false;
-    }
-
-    const updateGuests = () => {
-        let tempArg = [];
-        for(let i = 0;i < guestListElms.length; i++){
-            tempArg.push(guestListElms[i].value);
-        }
-        guestsRep.value = tempArg;
-    };
+        
+    });
     
 
 </script>

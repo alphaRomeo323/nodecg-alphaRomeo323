@@ -34,7 +34,7 @@
         </div>
         <div id="chat-template" class="align-middle hidden text-left p-1 flex items-end">
             <img class="rounded-full inline bg-white shadow align-middle my-1"
-                src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a69f118df70ad7828d4_icon_clyde_blurple_RGB.svg"
+                src="svg/f_f_health_44_svg_f_health_44_0bg.svg"
                 width="40" height="40" />
             <div
                 class="rounded-t-2xl rounded-br-2xl shadow align-middle inline-block text-left leading-tight p-2 font-jp ml-2">Test</div>
@@ -54,7 +54,14 @@
         </div>
         <!--Right Bottom-->
         <img id="logo" class="absolute bottom-2 right-4 hidden">
-        
+        <!--Top-->
+        <div id="counter" class="hidden absolute bg-slate-200/75 top-0 rounded-b-lg h-[64px] left-[640px] w-[640px] text-center text-[32px]">
+            <div class="font-jp ml-1 mb-1">
+                <span class="material-icons text-3xl">hourglass_full</span>
+                <span id="counter-title"></span>: <span id="counter-value" class="text-[48px]"></span>
+            </div>
+            
+        </div>
     </body>
     <script type="module">
         import {clock, textFadeUpdate} from "./js/common.js"
@@ -68,13 +75,16 @@
         const LiveChatRep = nodecg.Replicant("chat", 'nodecg-livechat');
         const playBackRep = nodecg.Replicant("playback");
         const LogoElm = document.getElementById("logo");
+        const counterElm = document.getElementById("counter");
+        const valueElm = document.getElementById("counter-value");
+        
 
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
 
         NodeCG.waitForReplicants(vcRep).then(() => {
-            VoiceOverlay(nodecg);
+            VoiceOverlay(nodecg);"counter-title"
         });
 
         NodeCG.waitForReplicants(DiscordChatRep).then(() => {
@@ -118,6 +128,55 @@
 		            opacity: [{ value: 0, duration: 0 }, { value: 1 }],
 		            duration: 1000,
 		            easing: "linear",
+                })
+            }
+        })
+        nodecg.Replicant("counter-title").on("change", (newValue) =>{
+            document.getElementById("counter-title").innerText = newValue
+        })
+        nodecg.Replicant("counter-value").on("change", (newValue) =>{
+            if (!counterElm.classList.contains("counter-enabled")) return;
+            anime({
+                targets: valueElm,
+                innerText: [valueElm.innerText, newValue],
+                round: 1,
+                duration: 100,
+                easing: 'easeInOutExpo'
+            })
+        })
+        nodecg.Replicant("counter-enable").on("change", (newValue) =>{
+            if (typeof newValue === "undefined") return;
+            if (newValue){
+                counterElm.classList.remove("hidden")
+                valueElm.innerText = 0;
+                anime({
+                    targets: counterElm,
+                    translateY: [{ value: -64, duration: 0 }, { value: 0 }],
+                    easing: 'easeOutExpo',
+                    duration: 1000,
+                    complete: (anim) =>{
+                        anime({
+                        targets: valueElm,
+                        innerText: [0, nodecg.Replicant("counter-value").value],
+                        round: 1,
+                        easing: 'easeInOutExpo',
+                        complete: (anim) =>{
+                            counterElm.classList.add("counter-enabled");
+                        }
+            })
+                    }
+                })
+            }
+            else {
+                counterElm.classList.remove("counter-enabled");
+                anime({
+                    targets: counterElm,
+                    translateY: [{ value: 0, duration: 0 }, { value: -64 }],
+                    easing: 'easeOutExpo',
+                    duration: 1000,
+                    complete: (anim) => {
+                        counterElm.classList.add("hidden")
+                    }
                 })
             }
         })

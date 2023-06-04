@@ -91,6 +91,12 @@
                 "name": "info",
                 "title": "Additional Information",
                 "file": "info.html"
+            },
+            {
+                "width": "3",
+                "name": "counter",
+                "title": "Fun / Counter",
+                "file": "counter.html"
             }
         ],
         "graphics": [

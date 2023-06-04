@@ -4,9 +4,13 @@
 	<meta charset="UTF-8">
 	<title>Stream Information</title>
     <style>
-        button {
-		font-size: large;
-	    }
+        .hidden{
+            display: none;
+        }
+        .guest-list{
+            margin-block-start: 0em;
+            margin-block-end: 0em;
+        }
     </style>
 </head>
 <body>
@@ -23,33 +27,72 @@
         <input type="time" id="startTime"> ~ <input type="time" id="endTime">
     </section>
     <section>
-	    <button id="apply">Apply</button>
+        <div>
+            Guests:
+            <ul id="guest-list" class="guest-list">
+            </ul>
+            <button type="button" id="btn-add">add</button>
+            <button type="button" id="btn-remove">remove</button>
+        </div>
     </section>
+    <section>
+	    <button id="apply" style="font-size: large;">Apply</button>
+        <button id="save">Save</button>
+        <select id="assets"></select>
+        <button id="load">Load</button>
+    </section>
+    <li id="guest-template" class="hidden">
+        <input type="text" name="guest"  size="20">
+    </li>
 </body>
 <script>
+    //document.element
     const titleElm = document.getElementById("title");
     const descriptionElm = document.getElementById("description");
     const startElm = document.getElementById("startTime");
     const endElm = document.getElementById("endTime");
+    const guestList = document.getElementById("guest-list");
+    const guestAddBtn = document.getElementById("btn-add");
+    const guestRemoveBtn = document.getElementById("btn-remove");
+    const guestListElms = document.getElementsByClassName("guest-form");
+    const saveBtn = document.getElementById("save");
+    const assetElm = document.getElementById("assets");
+    const loadBtn = document.getElementById("load");
+    //nodecg.Replicant
     const titleRep = nodecg.Replicant("title");
     const descriptionRep = nodecg.Replicant("description");
     const startRep = nodecg.Replicant("start-time");
     const endRep = nodecg.Replicant("end-time");
-    const stream = nodecg.Replicant("stream");
-    const lockRep = nodecg.Replicant("lock")
+    const guestsRep = nodecg.Replicant("guests");
+    const streamAssets = nodecg.Replicant("assets:streams");
+    const lockRep = nodecg.Replicant("lock");
     
-    NodeCG.waitForReplicants(titleRep,descriptionRep,startRep,endRep,lockRep).then(() => {
+    
+    
+    NodeCG.waitForReplicants(titleRep,descriptionRep,startRep,endRep,guestsRep,lockRep).then(() => {
+        guestsRep.value.forEach(element => {
+            addNewGuestInput();
+            child = guestList.lastElementChild;
+            child.firstElementChild.value = element;
+        });
         lockRep.on("change", (newValue) => {
             titleElm.disabled = newValue;
             descriptionElm.disabled = newValue;
             startElm.disabled = newValue;
             endElm.disabled = newValue;
+            guestAddBtn.disabled = newValue;
+            guestRemoveBtn.disabled = newValue;
+            loadBtn.disabled = newValue;
+            for(let i = 0;i < guestListElms.length; i++){
+                guestListElms[i].disabled = newValue;
+            }
         });
         document.getElementById("apply").onclick = () =>{
             titleRep.value = titleElm.value;
             descriptionRep.value = descriptionElm.value;
             startRep.value = startElm.value;
             endRep.value = endElm.value;
+            updateGuests();
         };
         titleRep.on("change",newValue => {
             titleElm.value = titleRep.value;
@@ -63,5 +106,104 @@
         endRep.on("change", newValue => {
             endElm.value = endRep.value;
         })
+        guestAddBtn.onclick = () =>
+        {
+            addNewGuestInput();
+        };
+        guestRemoveBtn.onclick = () =>
+        {
+            guestList.removeChild(guestList.lastElementChild);
+            if (!guestList.lastElementChild) guestRemoveBtn.disabled = true;
+            updateGuests();
+        };
+
+        saveBtn.onclick = () => {
+            const streamJSON = JSON.stringify({
+                title: titleElm.value,
+                description: descriptionElm.value,
+                startTime: startElm.value,
+                endTime: endElm.value,
+                guests: (() => {
+                    let tempArg = [];
+                    for(let i = 0;i < guestListElms.length; i++){
+                    tempArg.push(guestListElms[i].value);
+                    }
+                    return tempArg;
+                })()
+
+            });
+            const blob = new Blob([streamJSON],{type:"text/plain"});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = titleElm.value + '.json';
+            link.click();
+        }
+        streamAssets.on('change', newValue => {
+			let child = assetElm.lastElementChild;
+			while(child){
+				assetElm.removeChild(child);
+				child = assetElm.lastElementChild;
+			}
+			if(newValue != undefined) {
+				for (const assetKey of newValue) {
+					let option = document.createElement("option");
+					option.text = assetKey.name;
+					option.value = assetKey.url;
+					assetElm.appendChild(option.cloneNode(true));
+				}
+			}
+		});
+
+        loadBtn.onclick = () => {
+            getJSON(assetElm.selectedOptions[0].value, (v) => {
+			    while(guestList.lastElementChild){
+				    guestList.removeChild(guestList.lastElementChild);
+			    }
+                if (v != undefined) {
+                    titleElm.value = v.title;
+                    descriptionElm.value = v.description;
+                    startElm.value = v.startTime;
+                    endElm.value = v.endTime;
+                    v.guests.forEach(guest => {
+                        addNewGuestInput();
+                        let child = guestList.lastElementChild;
+                        child.firstElementChild.value = guest;
+                    });
+                }
+            });
+        }
     });
+
+    const addNewGuestInput = () => {
+        let tmpElem = document.getElementById("guest-template").cloneNode(true);
+        tmpElem.id = ""
+        tmpElem.classList.remove("hidden");
+        tmpElem.firstElementChild.classList.add("guest-form");
+        guestList.appendChild(tmpElem);
+        guestRemoveBtn.disabled = false;
+    }
+
+    const updateGuests = () => {
+        let tempArg = [];
+        for(let i = 0;i < guestListElms.length; i++){
+            tempArg.push(guestListElms[i].value);
+        }
+        guestsRep.value = tempArg;
+    };
+
+    const getJSON = function (url, callback) {
+	    const xhr = new XMLHttpRequest();
+	    xhr.open('GET', url, true);
+	    xhr.responseType = 'json';
+	    xhr.onload = function () {
+		    const {status} = xhr;
+		    if (status === 200) {
+			    callback(xhr.response);
+		    } else {
+			    console.log('Error while GETting json, ' + String(status));
+			    callback(null);
+		    }
+	    };
+	    xhr.send();
+    };
 </script>
