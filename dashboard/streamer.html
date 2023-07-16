@@ -22,7 +22,7 @@
     const guestRemoveBtn = document.getElementById("btn-remove");
     const guestListElms = document.getElementsByClassName("guest-form")
     const lockRep = nodecg.Replicant("lock");
-    NodeCG.waitForReplicants( witterHandleRep, lockRep).then(() => {
+    NodeCG.waitForReplicants(twitterHandleRep, lockRep).then(() => {
 
         nodecg.Replicant("lock").on("change", (newValue) => {
             twitterHandleElm.disabled = newValue;
