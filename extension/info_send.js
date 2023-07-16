@@ -1,5 +1,6 @@
 module.exports = (nodecg) => {
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
+    const MisskeyAcctRep = nodecg.Replicant("misskey-acct");
     const descriptionRep = nodecg.Replicant("description");
     const guestsRep = nodecg.Replicant("guests");
     const additionalInfo = nodecg.Replicant("additional-info");
@@ -17,6 +18,18 @@ module.exports = (nodecg) => {
             'svg': "twitter_logo_white.svg",
             'materialIcon': "",
             'content': "@"+twitterHandleRep.value
+        })
+    }
+    if(typeof MisskeyAcctRep.value === 'string' && MisskeyAcctRep.value !== ''){
+        frameInfo.push({ 
+            'svg': "misskey.svg",
+            'materialIcon': "",
+            'content': MisskeyAcctRep.value
+        })
+        queueInfo.push({ 
+            'svg': "misskey.svg",
+            'materialIcon': "",
+            'content': MisskeyAcctRep.value
         })
     }
     if(typeof descriptionRep.value === 'string' && descriptionRep.value != undefined){
