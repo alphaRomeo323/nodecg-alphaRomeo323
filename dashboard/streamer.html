@@ -10,28 +10,38 @@
         <input type="text" id="twitter-handle" name="twitter-handle" size="20">
     </div>
     <div>
+        <label for="misskey-acct">Misskey Acct </label>
+        <input type="text" id="misskey-acct" name="misskey-acct" size="20">
+    </div>
+    <div>
 	    <button id="apply">Apply</button>
     </div>
 </body>
 <script>
     const twitterHandleElm = document.getElementById("twitter-handle");
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
+    const MisskeyAcctElm = document.getElementById("misskey-acct");
+    const MisskeyAcctRep = nodecg.Replicant("misskey-acct");
     const guestsRep = nodecg.Replicant("guests");
     const guestList = document.getElementById("guest-list");
     const guestAddBtn = document.getElementById("btn-add");
     const guestRemoveBtn = document.getElementById("btn-remove");
     const guestListElms = document.getElementsByClassName("guest-form")
     const lockRep = nodecg.Replicant("lock");
-    NodeCG.waitForReplicants(twitterHandleRep, lockRep).then(() => {
+    NodeCG.waitForReplicants(twitterHandleRep, MisskeyAcctRep, lockRep).then(() => {
 
         nodecg.Replicant("lock").on("change", (newValue) => {
             twitterHandleElm.disabled = newValue;
         })
         document.getElementById("apply").onclick = () => {
             twitterHandleRep.value = twitterHandleElm.value;
+            MisskeyAcctRep.value = MisskeyAcctElm.value;
         };
         twitterHandleRep.on("change", (newValue) => {
             twitterHandleElm.value = newValue;
+        });
+        MisskeyAcctRep.on("change", (newValue) => {
+            MisskeyAcctElm.value = newValue;
         });
 
         

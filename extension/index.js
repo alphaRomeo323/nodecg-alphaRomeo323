@@ -25,6 +25,9 @@ module.exports = function (nodecg) {
     nodecg.Replicant("twitter-handle").on("change", ()=>{
         send(nodecg);
     })
+    nodecg.Replicant("misskey-acct").on("change", ()=>{
+        send(nodecg);
+    })
     nodecg.Replicant("guests").on("change", () => {
         send(nodecg);
     })
