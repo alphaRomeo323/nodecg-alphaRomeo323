@@ -1,4 +1,5 @@
 import anime from "../../node_modules/animejs/lib/anime.es.js"
+const duration = 1000
 export const clock = e => {
 	const chk = i => {
 		if (i < 10) {
@@ -16,7 +17,7 @@ export const textFadeUpdate = (newValue,textElm,divElm,maxSize) => {
 	anime({
 		targets: textElm,
 		opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-		duration: 1000,
+		duration,
 		easing: "linear",
 		complete: () => {
 			if ( newValue != undefined){
@@ -35,8 +36,8 @@ export const textFadeUpdate = (newValue,textElm,divElm,maxSize) => {
 			anime({
 				targets: textElm,
 				opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-				duration: 1000,
-				delay: 500,
+				duration,
+				delay: duration / 2,
 				easing: "linear",
 			});
 		}

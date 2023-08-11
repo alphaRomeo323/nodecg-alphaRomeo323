@@ -46,12 +46,12 @@ export const ChatOverlay = (nodecg) => {
         tl.add({
             targets: newelm,
             opacity: 0,
-            delay: 10000,
+            delay: 60000,
             duration: 1000,
         })
         setTimeout(function () {
             chatElem.removeChild(newelm)
-        }, 11000)
+        }, 61000)
         if (chatElem.childNodes.length > 6) {
             chatElem.removeChild(chatElem.firstElementChild)
         }
