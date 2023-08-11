@@ -1,5 +1,9 @@
 import anime from "../../node_modules/animejs/lib/anime.es.js"
 
+const deadline = 6
+const timeToLive = 60 // sec
+const duration = 1000 // milisec
+
 export const VoiceOverlay = (nodecg) => {
     nodecg.Replicant("vc", 'nodecg-discord-utils').on("change", (newValue) => {
         const vcElem = document.getElementById("vc");
@@ -26,7 +30,7 @@ export const ChatOverlay = (nodecg) => {
         const chatElem = document.getElementById("chat");
         let tmpElem = document.getElementById("chat-template").cloneNode(true);
         tmpElem.classList.remove("hidden")
-        tmpElem.lastElementChild.classList.add("bg-indigo-200/50")
+        tmpElem.lastElementChild.classList.add("bg-indigo-200/75")
         tmpElem.id = "";
         if( newValue.avatar !== ""){
             tmpElem.firstElementChild.src = newValue.avatar;
@@ -41,18 +45,18 @@ export const ChatOverlay = (nodecg) => {
             targets: newelm,
             opacity: [{ value: 0, duration: 0 }, { value: 1 }],
             translateX: [{ value: -100, duration: 0 }, { value: 0 }],
-            duration: 1000,
+            duration,
         });
         tl.add({
             targets: newelm,
             opacity: 0,
-            delay: 10000,
-            duration: 1000,
+            delay: timeToLive * 1000,
+            duration,
         })
         setTimeout(function () {
             chatElem.removeChild(newelm)
-        }, 11000)
-        if (chatElem.childNodes.length > 6) {
+        }, timeToLive * 1000 + duration)
+        if (chatElem.childNodes.length > deadline) {
             chatElem.removeChild(chatElem.firstElementChild)
         }
     });

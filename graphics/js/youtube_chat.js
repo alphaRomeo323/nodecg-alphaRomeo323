@@ -1,5 +1,9 @@
 import anime from "../../node_modules/animejs/lib/anime.es.js"
 
+const deadline = 6
+const timeToLive = 60 // sec
+const duration = 1000 // milisec
+
 export const YoutubeChatOverlay = (nodecg) => {
     nodecg.Replicant("chat", 'nodecg-livechat').on("change", (newValue) => {
         if (typeof newValue === "undefined"){
@@ -11,27 +15,31 @@ export const YoutubeChatOverlay = (nodecg) => {
         const chatElem = document.getElementById("chat");
         let tmpElem = document.getElementById("chat-template").cloneNode(true);
         tmpElem.classList.remove("hidden")
-        tmpElem.lastElementChild.classList.add("bg-rose-200/50")
+        tmpElem.lastElementChild.classList.add("bg-rose-200/75")
         tmpElem.id = "";
         if( newValue.avatar != ""){
             tmpElem.firstElementChild.src = newValue.avatar;
         }
-        let MessageTemp = ""
+        tmpElem.lastElementChild.innerText = ""
         newValue.message.forEach(element => {
             if ( typeof element.text !== "undefined"){
-                MessageTemp += element.text
+                const newText = document.createTextNode(element.text)
+                tmpElem.lastElementChild.appendChild(newText)
             }
             else if( typeof element.emojiText !== "undefined"){
                 if (element.isCustomEmoji === true){
-                    MessageTemp += `<img src="${element.url}" class="h-8">`
+                    const newCustomEmoji = document.createElement("img");
+                    newCustomEmoji.src = element.url;
+                    newCustomEmoji.classList.add("h-8")
+                    tmpElem.lastElementChild.appendChild(newCustomEmoji)
                 }
                 else {
-                    MessageTemp += element.emojiText
+                    const newEmoji = document.createTextNode(element.emojiText)
+                    tmpElem.lastElementChild.appendChild(newEmoji)
                 }
                 
             }
         });
-        tmpElem.lastElementChild.innerHTML = MessageTemp;
         const newelm = chatElem.appendChild(tmpElem);
         let tl = anime.timeline({
             easing: 'easeOutExpo',
@@ -41,18 +49,18 @@ export const YoutubeChatOverlay = (nodecg) => {
             targets: newelm,
             opacity: [{ value: 0, duration: 0 }, { value: 1 }],
             translateX: [{ value: -100, duration: 0 }, { value: 0 }],
-            duration: 1000,
+            duration
         });
         tl.add({
             targets: newelm,
             opacity: 0,
-            delay: 10000,
-            duration: 1000,
+            delay: timeToLive * 1000,
+            duration
         })
         setTimeout(function () {
             chatElem.removeChild(newelm)
-        }, 11000)
-        if (chatElem.childNodes.length > 6) {
+        }, timeToLive * 1000 + duration)
+        if (chatElem.childNodes.length > deadline) {
             chatElem.removeChild(chatElem.firstElementChild)
         }
     });

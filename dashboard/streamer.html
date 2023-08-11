@@ -6,12 +6,20 @@
 </head>
 <body>
     <div>
-        <label for="twitter-handle">Twitter @</label>
+        <label for="twitter-handle">X(Twitter) @</label>
         <input type="text" id="twitter-handle" name="twitter-handle" size="20">
     </div>
     <div>
         <label for="misskey-acct">Misskey Acct </label>
         <input type="text" id="misskey-acct" name="misskey-acct" size="20">
+    </div>
+    <div>
+        <label for="youtube-handle">Youtube @</label>
+        <input type="text" id="youtube-handle" name="youtube-handle" size="20">
+    </div>
+    <div>
+        <label for="twitch-id">Twitch </label>
+        <input type="text" id="twitch-id" name="twitch-id" size="20">
     </div>
     <div>
 	    <button id="apply">Apply</button>
@@ -22,20 +30,17 @@
     const twitterHandleRep = nodecg.Replicant("twitter-handle");
     const MisskeyAcctElm = document.getElementById("misskey-acct");
     const MisskeyAcctRep = nodecg.Replicant("misskey-acct");
-    const guestsRep = nodecg.Replicant("guests");
-    const guestList = document.getElementById("guest-list");
-    const guestAddBtn = document.getElementById("btn-add");
-    const guestRemoveBtn = document.getElementById("btn-remove");
-    const guestListElms = document.getElementsByClassName("guest-form")
-    const lockRep = nodecg.Replicant("lock");
-    NodeCG.waitForReplicants(twitterHandleRep, MisskeyAcctRep, lockRep).then(() => {
+    const youtubeHandleElm = document.getElementById("youtube-handle");
+    const youtubeHandleRep = nodecg.Replicant("youtube-handle");
+    const twitchIdElm = document.getElementById("twitch-id");
+    const twitchIdRep = nodecg.Replicant("twitch-id");
 
-        nodecg.Replicant("lock").on("change", (newValue) => {
-            twitterHandleElm.disabled = newValue;
-        })
+    NodeCG.waitForReplicants(twitterHandleRep, MisskeyAcctRep, youtubeHandleRep, twitchIdRep).then(() => {
         document.getElementById("apply").onclick = () => {
             twitterHandleRep.value = twitterHandleElm.value;
             MisskeyAcctRep.value = MisskeyAcctElm.value;
+            youtubeHandleRep.value = youtubeHandleElm.value;
+            twitchIdRep.value =twitchIdElm.value;
         };
         twitterHandleRep.on("change", (newValue) => {
             twitterHandleElm.value = newValue;
@@ -43,8 +48,12 @@
         MisskeyAcctRep.on("change", (newValue) => {
             MisskeyAcctElm.value = newValue;
         });
-
-        
+        youtubeHandleRep.on("change", (newValue) => {
+            youtubeHandleElm.value = newValue;
+        });
+        twitchIdRep.on("change", (newValue) =>{
+            twitchIdElm.value = newValue;
+        });
     });
     
 

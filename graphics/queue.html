@@ -27,9 +27,9 @@
                 <span id="status-text" class="font"></span> 
             </span>
         </div>
-        <div id="info" class="tech-anime mt-14 ml-20 text-3xl font align-middle">
+        <div id="info" class="tech-anime mt-6 ml-20 font align-middle">
         </div>
-        <div class="absolute top-[480px] mx-40 h-[320px]">
+        <div class="mt-16 mx-40">
             <div class="mt-10 flex" id="title">
                 <div class="flex-none w-16">
                     <span class="material-icons align-sub text-6xl inline-block">navigate_next</span>
@@ -55,6 +55,15 @@
                 </div>
                 
             </div>
+            <div class="mt-8 flex hidden" title="guests" id="guests">
+                <div class="flex-none w-16">
+                    <span class="material-icons align-sub text-5xl">people</span>
+                </div>
+                <div class="flex-1 font">
+                    ゲスト: <span id="guests-text" class="text-4xl tracking-wide"></span>
+                </div>
+                
+            </div>
         </div>
         <div id="bgm" class="absolute bottom-10 ml-20">
             <span class="material-icons align-sub text-4xl">queue_music</span>
@@ -66,11 +75,13 @@
         import anime from "../node_modules/animejs/lib/anime.es.js"
         import {currentTrackUpdate} from "./js/playback_anime.js"
         import {ReplicantAnimCallback} from "./js/anime_callback.js"
-        
-        const animationTime = 2000;
-        const statusRep = nodecg.Replicant("status")
-        const restartRep = nodecg.Replicant("restart-time")
+
+        const guestsElm = document.getElementById("guests");
+
+        const statusRep = nodecg.Replicant("status");
+        const restartRep = nodecg.Replicant("restart-time");
         const statusElm = document.getElementById("status-text");
+        const guestsRep = nodecg.Replicant("guests");
         const playBackRep = nodecg.Replicant("playback");
         const infoRep = nodecg.Replicant("queue-info");
 
@@ -90,6 +101,10 @@
         nodecg.Replicant("end-time").on("change", (newValue) => {
             timechange();
         });
+        guestsRep.on("change", (newValue) => {
+            updateGuests();
+        });
+
         nodecg.Replicant("bgm").on("change", (newValue) => {
             let text = "Unknown";
             if (newValue != undefined) {
@@ -114,6 +129,41 @@
                 document.getElementById("time-text"),
                 document.getElementById("time")
             )
+        }
+
+        const updateGuests = () => {
+            if(typeof guestsRep.value === 'object' && guestsRep.value.length > 0){
+                let guests = "";
+                guestsRep.value.forEach(element => {
+                    if (guests !== "")
+                    guests += " / ";
+                    guests += element;
+                });
+                textFadeUpdate(guests, document.getElementById("guests-text"), guestsElm)
+                if(guestsElm.classList.contains("hidden")){
+                    guestsElm.classList.remove("hidden");
+                    anime({
+				        targets: guestsElm,
+				        opacity: [{ value: 0, duration: 0 }, { value: 1 }],
+				        duration: 1000,
+				        delay: 500,
+				        easing: "linear",
+                    });
+                }
+            }
+            else{
+                anime({
+				    targets: guestsElm,
+				    opacity: [{ value: 1, duration: 0 }, { value: 0 }],
+				    duration: 1000,
+				    delay: 500,
+				    easing: "linear",
+                    complete: (anim) => {
+                        guestsElm.classList.add("hidden");
+                    }
+			    });
+            }
+            
         }
         
         statusRep.on("change", newVal => {

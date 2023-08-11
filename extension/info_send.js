@@ -10,12 +10,12 @@ module.exports = (nodecg) => {
 
     if(typeof twitterHandleRep.value === 'string' && twitterHandleRep.value !== ''){
         frameInfo.push({ 
-            'svg': "twitter_logo_black.svg",
+            'svg': "x.svg",
             'materialIcon': "",
             'content': "@"+twitterHandleRep.value
         })
         queueInfo.push({ 
-            'svg': "twitter_logo_white.svg",
+            'svg': "x.svg",
             'materialIcon': "",
             'content': "@"+twitterHandleRep.value
         })
@@ -51,7 +51,6 @@ module.exports = (nodecg) => {
             info.content += element;
         });
         frameInfo.push(Object.assign({}, info));
-        queueInfo.push(Object.assign({}, info));
     }
     if(typeof additionalInfo.value === 'object' &&  additionalInfo.value !== []){
         additionalInfo.value.forEach(element =>{

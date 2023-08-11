@@ -52,12 +52,6 @@
             },
             {
                 "width": "3",
-                "name": "memo",
-                "title": "Memo",
-                "file": "memo.html"
-            },
-            {
-                "width": "3",
                 "name": "stream",
                 "title": "Stream Information",
                 "file": "stream.html"
@@ -81,12 +75,6 @@
                 "file": "streamer.html"
             },
             {
-                "width": "2",
-                "name": "lock",
-                "title": "Lock",
-                "file": "lock.html"
-            },
-            {
                 "width": "3",
                 "name": "info",
                 "title": "Additional Information",
@@ -95,8 +83,8 @@
             {
                 "width": "3",
                 "name": "counter",
-                "title": "Fun / Counter",
-                "file": "counter.html"
+                "title": "Fun",
+                "file": "fun.html"
             }
         ],
         "graphics": [

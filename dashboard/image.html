@@ -39,19 +39,11 @@
 	const backgroundAsset = nodecg.Replicant("assets:backgrounds");
 	const opRep = nodecg.Replicant("op");
 	const opAsset = nodecg.Replicant("assets:op");
-	const lockRep = nodecg.Replicant("lock");
 
-	NodeCG.waitForReplicants(logoRep, logoSizeRep, logoHideRep, backgroundRep, logoAsset, backgroundAsset, lockRep).then(() => {
+	NodeCG.waitForReplicants(logoRep, logoSizeRep, logoHideRep, backgroundRep, logoAsset, backgroundAsset).then(() => {
 		logoSizeElm.value = logoSizeRep.value;
 		logoHideElm.checked = logoHideRep.value;
 
-		lockRep.on("change", (newValue) => {
-            logoElm.disabled = newValue;
-            backgroundElm.disabled = newValue;
-            applyElm.disabled = newValue;
-			logoSizeElm.disabled = newValue;
-        });
-		
 		applyElm.onclick = () => {
 			send();
 		}

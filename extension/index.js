@@ -6,6 +6,7 @@ module.exports = function (nodecg) {
     const playBackRep = nodecg.Replicant("playback");
     playBackRep.value = { playing: false };
 
+    //mopidy websocket
     if (nodecg.bundleConfig.mopidyWebSocket){
         const mopidy = new Mopidy({
             webSocketUrl: nodecg.bundleConfig.mopidyWebSocket,    
@@ -18,7 +19,7 @@ module.exports = function (nodecg) {
             nodecg.log.error(`WebSocket error: ${error.message}`);
         });
     }
-
+    //callback of replicants
     nodecg.Replicant("description").on("change", ()=>{
         send(nodecg);
     })
