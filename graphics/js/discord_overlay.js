@@ -30,7 +30,7 @@ export const ChatOverlay = (nodecg) => {
         const chatElem = document.getElementById("chat");
         let tmpElem = document.getElementById("chat-template").cloneNode(true);
         tmpElem.classList.remove("hidden")
-        tmpElem.lastElementChild.classList.add("bg-indigo-200/50")
+        tmpElem.lastElementChild.classList.add("bg-indigo-200/75")
         tmpElem.id = "";
         if( newValue.avatar !== ""){
             tmpElem.firstElementChild.src = newValue.avatar;

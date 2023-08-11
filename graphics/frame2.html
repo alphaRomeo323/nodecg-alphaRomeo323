@@ -55,35 +55,67 @@
         <!--Right Bottom-->
         <img id="logo" class="absolute bottom-2 right-4 hidden">
         <!--Top-->
-        <div id="counter" class="hidden absolute bg-slate-200/75 top-0 rounded-b-lg h-[64px] left-[640px] w-[640px] text-center text-[32px] flex items-center justify-center">
+        <div id="counter" class="hidden absolute bg-slate-200/75 left-1/2 top-0 rounded-b-lg h-[64px] w-[640px] text-center text-[32px] flex items-center justify-center">
             <div class="overflow-hidden font-jp ml-1 mb-1 mt-1 mr-1 leading-tight">
-                <span class="material-icons align-sub text-3xl">hourglass_full</span>
+                <span class="material-icons text-3xl">hourglass_full</span>
                 <span id="counter-title"></span>: <span id="counter-value" class="text-[48px]"></span>
             </div>
         </div>
-        <div id="memo" class="hidden absolute bg-slate-200/75 top-0 rounded-b-lg h-[64px] left-[640px] w-[640px] text-center text-[32px] align-middle">
+        <div id="memo" class="absolute hidden bg-slate-200/75 top-0 left-1/2 rounded-b-lg h-[64px] w-[640px] text-center text-[32px] align-middle">
             <div class="overflow-hidden font-jp absolute top-1 left-1 right-1 bottom-1 leading-tight flex items-center justify-center">
                 <span class="material-icons text-3xl">edit_note</span>
                 <span id="memo-text"></span>
             </div>
+        </div>
+        <!--Bottom-->
+        <div id="ad" class="absolute hidden bg-slate-200/75 bottom-0 left-1/2 rounded-t-lg w-[640px] h-[180px] pt-4 pl-4 font-jp">
+            <div class="flex items-center justify-center flex- font-jp text-3xl">
+                <div class="material-icons text-3xl w-16">favorite<br>thumb_up_alt</div>
+                <div class="text-center">高評価・チャンネル登録・フォローをよろしくお願いします！</div>
+            </div>
+            <div class="flex items-center justify-center flex-wrap text-2xl">
+                <div id="twitter" class="mx-2 flex items-center">
+                    <img src="svg/x_black.svg" class="h-4 float-left mr-2 mt-1">
+                    <span id="twitter-handle">@alpha8911_v</span>
+                </div>
+                <div id="misskey" class="mx-2 flex items-center">
+                    <img src="svg/misskey_black.svg" class="h-4 float-left mr-2 ml-2 mt-1">
+                    <span id="misskey-acct"class="mr-2">@Al2O3@key.tpc3.org</span>
+                </div>
+                <div id="youtube" class="mx-2 flex items-center">
+                    <img src="svg/youtube_black.svg" class="h-4 float-left mr-2 ml-2 mt-1">
+                    <span id="youtube-channel"class="mr-2">@alpha8911_v</span>
+                </div>
+                <div id="twitch" class="mx-2 flex items-center">
+                    <img src="svg/TwitchGlitchBlackOps.svg" class="h-6 float-left mr-2 ml-2 mt-1">
+                    <span id="twitch-user"class="mr-2">alphaRomeo323</span>
+                </div>
+            </div>
+        </div>
     </body>
     <script type="module">
+        //js
         import {clock, textFadeUpdate} from "./js/common.js"
         import anime from "../node_modules/animejs/lib/anime.es.js"
         import {VoiceOverlay, ChatOverlay} from "./js/discord_overlay.js"
         import {YoutubeChatOverlay} from "./js/youtube_chat.js"
         import {currentTrackUpdate} from "./js/playback_anime.js"
-
+        //Replicants
         const vcRep = nodecg.Replicant("vc", 'nodecg-discord-utils');
         const DiscordChatRep = nodecg.Replicant("chat", 'nodecg-discord-utils');
         const LiveChatRep = nodecg.Replicant("chat", 'nodecg-livechat');
         const playBackRep = nodecg.Replicant("playback");
+        //Document.Elements
         const LogoElm = document.getElementById("logo");
         const counterElm = document.getElementById("counter");
         const valueElm = document.getElementById("counter-value");
         const memoElm = document.getElementById("memo");
         const memoText = document.getElementById("memo-text");
+        const adElm = document.getElementById("ad");
+        //const
+        const duration = 1000; //sec
 
+        //Clock
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
@@ -98,36 +130,58 @@
             ChatOverlay(nodecg);
         });
 
-        //
+        //Messages from Youtube/Twitch
         NodeCG.waitForReplicants(LiveChatRep).then(() => {
             YoutubeChatOverlay(nodecg);
         });
 
+        //Logo image changer
         nodecg.Replicant("logo").on("change", (newValue) => {
             if(newValue != undefined){
                 LogoElm.src = newValue;
             }
         });
 
+        //Logo size changer
+        nodecg.Replicant("logo-size").on("change", (newValue) => {
+            LogoElm.style.width = newValue + 'px'
+        });
+
+        //Memo changer
         nodecg.Replicant("memo").on("change", (newValue) => {
             if(memoElm.classList.contains("memo-enabled"))
                 textFadeUpdate(newValue,memoText,memoElm,32)
         })
 
-        nodecg.Replicant("logo-size").on("change", (newValue) => {
-            LogoElm.style.width = newValue + 'px'
-        });
-
+        //Current Track
         NodeCG.waitForReplicants(playBackRep).then(() =>{
             currentTrackUpdate(playBackRep);
         })
 
+        //Counter title changer
+        nodecg.Replicant("counter-title").on("change", (newValue) =>{
+            document.getElementById("counter-title").innerText = newValue
+        })
+
+        //Counter value changer
+        nodecg.Replicant("counter-value").on("change", (newValue) =>{
+            if (!counterElm.classList.contains("counter-enabled")) return;
+            anime({
+                targets: valueElm,
+                innerText: [valueElm.innerText, newValue],
+                round: 1,
+                duration: 100,
+                easing: 'easeInOutExpo'
+            })
+        })
+
+        //Show/hide logo
         nodecg.Replicant("logo-hide").on("change", (newValue) => {
             if (newValue){
                 anime({
 		            targets: LogoElm,
 		            opacity: [{ value: 1, duration: 0 }, { value: 0 }],
-		            duration: 1000,
+		            duration,
 		            easing: "linear",
                     complete: () => {
                         LogoElm.classList.add("hidden")
@@ -139,24 +193,13 @@
                 anime({
 		            targets: LogoElm,
 		            opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-		            duration: 1000,
+		            duration,
 		            easing: "linear",
                 })
             }
         })
-        nodecg.Replicant("counter-title").on("change", (newValue) =>{
-            document.getElementById("counter-title").innerText = newValue
-        })
-        nodecg.Replicant("counter-value").on("change", (newValue) =>{
-            if (!counterElm.classList.contains("counter-enabled")) return;
-            anime({
-                targets: valueElm,
-                innerText: [valueElm.innerText, newValue],
-                round: 1,
-                duration: 100,
-                easing: 'easeInOutExpo'
-            })
-        })
+        
+        //Show/hide fun items
         nodecg.Replicant("fun-type").on("change", (newValue) =>{
             if (newValue === "counter"){
                 counterElm.classList.remove("hidden")
@@ -164,8 +207,9 @@
                 anime({
                     targets: counterElm,
                     translateY: [{ value: -64, duration: 0 }, { value: 0 }],
+                    translateX: [{ value: '-50%', duration: 0 }, { value: '-50%' }],
                     easing: 'easeOutExpo',
-                    duration: 1000,
+                    duration,
                     complete: (anim) =>{
                         anime({
                         targets: valueElm,
@@ -175,35 +219,37 @@
                         complete: (anim) =>{
                             counterElm.classList.add("counter-enabled");
                         }
-            })
+                    });
                     }
-                })
+                });
             }
             else {
                 counterElm.classList.remove("counter-enabled");
                 anime({
                     targets: counterElm,
                     translateY: [{ value: 0, duration: 0 }, { value: -64 }],
+                    translateX: [{ value: '-50%', duration: 0 }, { value: '-50%' }],
                     easing: 'easeOutExpo',
-                    duration: 1000,
+                    duration,
                     complete: (anim) => {
-                        counterElm.classList.add("hidden")
+                        counterElm.classList.add("hidden");
                     }
-                })
+                });
             }
             if (newValue === "memo"){
-                memoElm.classList.remove("hidden")
+                memoElm.classList.remove("hidden");
                 valueElm.innerText = 0;
                 anime({
                     targets: memoElm,
                     translateY: [{ value: -64, duration: 0 }, { value: 0 }],
+                    translateX: [{ value: '-50%', duration: 0 }, { value: '-50%' }],
                     easing: 'easeOutExpo',
-                    duration: 1000,
+                    duration,
                     complete: (anim) =>{
                         textFadeUpdate(nodecg.Replicant("memo").value,memoText,memoElm,32)
                         memoElm.classList.add("memo-enabled");
                     }
-                })
+                });
             }
             else {
                 memoElm.classList.remove("memo-enabled");
@@ -211,14 +257,43 @@
                 anime({
                     targets: memoElm,
                     translateY: [{ value: 0, duration: 0 }, { value: -64 }],
+                    translateX: [{ value: '-50%', duration: 0 }, { value: '-50%' }],
                     easing: 'easeOutExpo',
-                    duration: 1000,
+                    duration,
                     complete: (anim) => {
-                        memoElm.classList.add("hidden")
+                        memoElm.classList.add("hidden");
                     }
-                })
+                });
             }
-        })
+        });
+        //Show/hide advertisements
+        nodecg.Replicant("status").on("change",(newValue) =>{
+            if(newValue === "after"){
+                adElm.classList.remove("hidden");
+                anime({
+                    targets: adElm,
+                    translateY: [{ value: 180, duration: 0 }, { value: 0 }],
+                    translateX: [{ value: '-50%', duration: 0 }, { value: '-50%' }],
+                    easing: 'easeOutExpo',
+                    duration,
+                });
+            }
+            else{
+                anime({
+                    targets: adElm,
+                    translateY: [{ value: 0, duration: 0 }, { value: 180 }],
+                    translateX: [{ value: '-50%', duration: 0 }, { value: '-50%' }],
+                    easing: 'easeOutExpo',
+                    duration,
+                    complete: (anim) => {
+                        adElm.classList.add("hidden");
+                    }
+                });
+            }
+
+        });
+
+        //End of Scripts
     </script>
     <style>
         .font-jp {
