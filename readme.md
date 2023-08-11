@@ -19,8 +19,8 @@ NodeCG上で動作します
 - `guests`: ゲスト一覧。string型のリスト
 - `twitter-handle`: X(旧Twitter)のハンドル。**@を含まない**string型。~~これに限らずX系のRepやElmはTwitter名義です~~
 - `misskey-acct`: MisskeyのAcct。**@とホスト名を含む**string型
-- `youtube-handle`: Youtubeのハンドル。**@を含まない**string型。未実装
-- `twitch-id`: Twitchのユーザー名。string型。未実装
+- `youtube-handle`: Youtubeのハンドル。**@を含まない**string型
+- `twitch-id`: Twitchのユーザー名。string型
 - `additional-info`: その他情報。以下のハッシュで構成されたオブジェクトのリスト
   - `svg`: SVGのURL。`/graphics`からの相対パスで指定
   - `materialIcon`: [Material Icon](https://fonts.google.com/icons?icon.set=Material+Icons)を指定するためのコードポイント。string型
