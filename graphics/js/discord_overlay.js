@@ -1,5 +1,9 @@
 import anime from "../../node_modules/animejs/lib/anime.es.js"
 
+const deadline = 6
+const timeToLive = 60 // sec
+const duration = 1000 // milisec
+
 export const VoiceOverlay = (nodecg) => {
     nodecg.Replicant("vc", 'nodecg-discord-utils').on("change", (newValue) => {
         const vcElem = document.getElementById("vc");
@@ -41,18 +45,18 @@ export const ChatOverlay = (nodecg) => {
             targets: newelm,
             opacity: [{ value: 0, duration: 0 }, { value: 1 }],
             translateX: [{ value: -100, duration: 0 }, { value: 0 }],
-            duration: 1000,
+            duration,
         });
         tl.add({
             targets: newelm,
             opacity: 0,
-            delay: 60000,
-            duration: 1000,
+            delay: timeToLive * 1000,
+            duration,
         })
         setTimeout(function () {
             chatElem.removeChild(newelm)
-        }, 61000)
-        if (chatElem.childNodes.length > 6) {
+        }, timeToLive * 1000 + duration)
+        if (chatElem.childNodes.length > deadline) {
             chatElem.removeChild(chatElem.firstElementChild)
         }
     });

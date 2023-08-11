@@ -1,5 +1,6 @@
 import anime from "../../node_modules/animejs/lib/anime.es.js"
-const BGMdelay = 10000;
+const BGMdelay = 10000; //milisec
+const duration = 1000; //milisec
 
 
 export const currentTrackUpdate = (replicant) => {
@@ -34,12 +35,12 @@ export const currentTrackUpdate = (replicant) => {
         tl.add({
             targets:tmpElem,
             translateX: [{ value: 380, duration: 0 }, { value: 0 }],
-        duration: 1000,
+            duration,
         });
         tl.add({
             targets:tmpElem,
             translateX: 380,
-            duration: 1000,
+            duration,
             delay: BGMdelay,
         });
         frameElm.appendChild(tmpElem);
