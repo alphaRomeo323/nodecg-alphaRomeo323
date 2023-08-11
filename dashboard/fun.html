@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Fun</title>
+
+</head>
+<body>
+    <!--Funtype=None-->
+    <h3><label>None</label><input type="radio" name="fun" value="none"></h3>
+    <!--Funtype=Memo-->
+    <h3><label>Memo</label><input type="radio" name="fun" value="memo"></h3>
+    <div>
+        <textarea name="memo" id="memo" cols="40" rows="3"></textarea>
+    </div>
+    <div>
+        <button id="memo-apply">apply</button>
+    </div>
+    <!--Funtype=Counter-->
+    <h3><label>Counter</label><input type="radio" name="fun" value="counter"></h3>
+    <div>
+        <label>Title</label>
+        <input type="text" id="counter-title" name="counter-title" size="30">
+        <button id="counter-apply">apply</button>
+    </div>
+    <div>
+        <label>Value</label>
+        <input type="number" id="counter-value" name="counter-value" size="10">
+        <button id="plus-button" style="font-size: large;">+1</button>
+    </div>
+</body>
+<script>
+    const typeElm = document.getElementsByName("fun");
+    const memoElm = document.getElementById("memo");
+    const titleElm = document.getElementById("counter-title");
+    const valueElm = document.getElementById("counter-value");
+    const funTypeRep = nodecg.Replicant("fun-type");
+    const titleRep = nodecg.Replicant("counter-title");
+    const valueRep = nodecg.Replicant("counter-value");
+    const lockRep = nodecg.Replicant("lock");
+    const memoRep = nodecg.Replicant("memo");
+
+    NodeCG.waitForReplicants(funTypeRep, memoRep, titleRep, valueRep).then(() => {
+        for (let target of typeElm) {
+            target.addEventListener(`change`, () => {
+                funTypeRep.value = target.value;
+            })
+        };
+        document.getElementById("memo-apply").onclick = () =>{
+            memoRep.value = memoElm.value;
+        };
+
+        document.getElementById("counter-apply").onclick = () =>{
+            titleRep.value = titleElm.value;
+            valueRep.value = valueElm.value;
+        };
+        document.getElementById("plus-button").onclick = () =>{
+            valueRep.value++;
+        };
+
+        funTypeRep.on("change", (newValue) =>{
+            for (let target of typeElm) {
+                    if (target.value === funTypeRep.value){
+                        target.checked = true;
+                    }
+            }
+        })
+        memoRep.on("change", newValue => {
+            memoElm.value = newValue;
+        })
+        titleRep.on("change",newValue => {
+            titleElm.value = newValue;
+        });
+        valueRep.on("change",newValue => {
+            valueElm.value = newValue;
+        });
+    })
+</script>

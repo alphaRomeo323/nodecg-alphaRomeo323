@@ -55,13 +55,17 @@
         <!--Right Bottom-->
         <img id="logo" class="absolute bottom-2 right-4 hidden">
         <!--Top-->
-        <div id="counter" class="hidden absolute bg-slate-200/75 top-0 rounded-b-lg h-[64px] left-[640px] w-[640px] text-center text-[32px]">
-            <div class="font-jp ml-1 mb-1">
-                <span class="material-icons text-3xl">hourglass_full</span>
+        <div id="counter" class="hidden absolute bg-slate-200/75 top-0 rounded-b-lg h-[64px] left-[640px] w-[640px] text-center text-[32px] flex items-center justify-center">
+            <div class="overflow-hidden font-jp ml-1 mb-1 mt-1 mr-1 leading-tight">
+                <span class="material-icons align-sub text-3xl">hourglass_full</span>
                 <span id="counter-title"></span>: <span id="counter-value" class="text-[48px]"></span>
             </div>
-            
         </div>
+        <div id="memo" class="hidden absolute bg-slate-200/75 top-0 rounded-b-lg h-[64px] left-[640px] w-[640px] text-center text-[32px] align-middle">
+            <div class="overflow-hidden font-jp absolute top-1 left-1 right-1 bottom-1 leading-tight flex items-center justify-center">
+                <span class="material-icons text-3xl">edit_note</span>
+                <span id="memo-text"></span>
+            </div>
     </body>
     <script type="module">
         import {clock, textFadeUpdate} from "./js/common.js"
@@ -77,20 +81,24 @@
         const LogoElm = document.getElementById("logo");
         const counterElm = document.getElementById("counter");
         const valueElm = document.getElementById("counter-value");
-        
+        const memoElm = document.getElementById("memo");
+        const memoText = document.getElementById("memo-text");
 
         setInterval(() => {
             clock(document.getElementById("clock"));
         }, 1000);
 
+        //Voicechat of Discord
         NodeCG.waitForReplicants(vcRep).then(() => {
             VoiceOverlay(nodecg);"counter-title"
         });
 
+        //Message History of Discord Channel
         NodeCG.waitForReplicants(DiscordChatRep).then(() => {
             ChatOverlay(nodecg);
         });
 
+        //
         NodeCG.waitForReplicants(LiveChatRep).then(() => {
             YoutubeChatOverlay(nodecg);
         });
@@ -100,6 +108,11 @@
                 LogoElm.src = newValue;
             }
         });
+
+        nodecg.Replicant("memo").on("change", (newValue) => {
+            if(memoElm.classList.contains("memo-enabled"))
+                textFadeUpdate(newValue,memoText,memoElm,32)
+        })
 
         nodecg.Replicant("logo-size").on("change", (newValue) => {
             LogoElm.style.width = newValue + 'px'
@@ -144,9 +157,8 @@
                 easing: 'easeInOutExpo'
             })
         })
-        nodecg.Replicant("counter-enable").on("change", (newValue) =>{
-            if (typeof newValue === "undefined") return;
-            if (newValue){
+        nodecg.Replicant("fun-type").on("change", (newValue) =>{
+            if (newValue === "counter"){
                 counterElm.classList.remove("hidden")
                 valueElm.innerText = 0;
                 anime({
@@ -176,6 +188,33 @@
                     duration: 1000,
                     complete: (anim) => {
                         counterElm.classList.add("hidden")
+                    }
+                })
+            }
+            if (newValue === "memo"){
+                memoElm.classList.remove("hidden")
+                valueElm.innerText = 0;
+                anime({
+                    targets: memoElm,
+                    translateY: [{ value: -64, duration: 0 }, { value: 0 }],
+                    easing: 'easeOutExpo',
+                    duration: 1000,
+                    complete: (anim) =>{
+                        textFadeUpdate(nodecg.Replicant("memo").value,memoText,memoElm,32)
+                        memoElm.classList.add("memo-enabled");
+                    }
+                })
+            }
+            else {
+                memoElm.classList.remove("memo-enabled");
+                textFadeUpdate("",memoText,memoElm,32)
+                anime({
+                    targets: memoElm,
+                    translateY: [{ value: 0, duration: 0 }, { value: -64 }],
+                    easing: 'easeOutExpo',
+                    duration: 1000,
+                    complete: (anim) => {
+                        memoElm.classList.add("hidden")
                     }
                 })
             }
