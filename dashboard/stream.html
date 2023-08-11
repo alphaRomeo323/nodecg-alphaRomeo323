@@ -65,34 +65,19 @@
     const endRep = nodecg.Replicant("end-time");
     const guestsRep = nodecg.Replicant("guests");
     const streamAssets = nodecg.Replicant("assets:streams");
-    const lockRep = nodecg.Replicant("lock");
     
-    
-    
-    NodeCG.waitForReplicants(titleRep,descriptionRep,startRep,endRep,guestsRep,lockRep).then(() => {
+    NodeCG.waitForReplicants(titleRep,descriptionRep,startRep,endRep,guestsRep).then(() => {
         guestsRep.value.forEach(element => {
             addNewGuestInput();
             child = guestList.lastElementChild;
             child.firstElementChild.value = element;
-        });
-        lockRep.on("change", (newValue) => {
-            titleElm.disabled = newValue;
-            descriptionElm.disabled = newValue;
-            startElm.disabled = newValue;
-            endElm.disabled = newValue;
-            guestAddBtn.disabled = newValue;
-            guestRemoveBtn.disabled = newValue;
-            loadBtn.disabled = newValue;
-            for(let i = 0;i < guestListElms.length; i++){
-                guestListElms[i].disabled = newValue;
-            }
         });
         document.getElementById("apply").onclick = () =>{
             titleRep.value = titleElm.value;
             descriptionRep.value = descriptionElm.value;
             startRep.value = startElm.value;
             endRep.value = endElm.value;
-            updateGuests();
+            guestsRep.value = updateGuests();
         };
         titleRep.on("change",newValue => {
             titleElm.value = titleRep.value;
@@ -114,7 +99,7 @@
         {
             guestList.removeChild(guestList.lastElementChild);
             if (!guestList.lastElementChild) guestRemoveBtn.disabled = true;
-            updateGuests();
+            guestsRep.value = updateGuests();
         };
 
         saveBtn.onclick = () => {
@@ -123,13 +108,7 @@
                 description: descriptionElm.value,
                 startTime: startElm.value,
                 endTime: endElm.value,
-                guests: (() => {
-                    let tempArg = [];
-                    for(let i = 0;i < guestListElms.length; i++){
-                    tempArg.push(guestListElms[i].value);
-                    }
-                    return tempArg;
-                })()
+                guests: updateGuests()
 
             });
             const blob = new Blob([streamJSON],{type:"text/plain"});
@@ -188,7 +167,7 @@
         for(let i = 0;i < guestListElms.length; i++){
             tempArg.push(guestListElms[i].value);
         }
-        guestsRep.value = tempArg;
+        return tempArg
     };
 
     const getJSON = function (url, callback) {

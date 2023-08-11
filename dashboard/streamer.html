@@ -6,7 +6,7 @@
 </head>
 <body>
     <div>
-        <label for="twitter-handle">Twitter @</label>
+        <label for="twitter-handle">X(Twitter) @</label>
         <input type="text" id="twitter-handle" name="twitter-handle" size="20">
     </div>
     <div>
@@ -27,12 +27,7 @@
     const guestAddBtn = document.getElementById("btn-add");
     const guestRemoveBtn = document.getElementById("btn-remove");
     const guestListElms = document.getElementsByClassName("guest-form")
-    const lockRep = nodecg.Replicant("lock");
-    NodeCG.waitForReplicants(twitterHandleRep, MisskeyAcctRep, lockRep).then(() => {
-
-        nodecg.Replicant("lock").on("change", (newValue) => {
-            twitterHandleElm.disabled = newValue;
-        })
+    NodeCG.waitForReplicants(twitterHandleRep, MisskeyAcctRep).then(() => {
         document.getElementById("apply").onclick = () => {
             twitterHandleRep.value = twitterHandleElm.value;
             MisskeyAcctRep.value = MisskeyAcctElm.value;
@@ -43,8 +38,6 @@
         MisskeyAcctRep.on("change", (newValue) => {
             MisskeyAcctElm.value = newValue;
         });
-
-        
     });
     
 
