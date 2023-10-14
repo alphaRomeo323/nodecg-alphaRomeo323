@@ -9,37 +9,46 @@ export const YoutubeChatOverlay = (nodecg) => {
         if (typeof newValue === "undefined"){
             return;
         }
-        if (newValue.platform !== "youtube"){
-            return;
-        }
         const chatElem = document.getElementById("chat");
         let tmpElem = document.getElementById("chat-template").cloneNode(true);
-        tmpElem.classList.remove("hidden")
-        tmpElem.lastElementChild.classList.add("bg-rose-200/75")
         tmpElem.id = "";
-        if( newValue.avatar != ""){
-            tmpElem.firstElementChild.src = newValue.avatar;
-        }
-        tmpElem.lastElementChild.innerText = ""
-        newValue.message.forEach(element => {
-            if ( typeof element.text !== "undefined"){
-                const newText = document.createTextNode(element.text)
-                tmpElem.lastElementChild.appendChild(newText)
-            }
-            else if( typeof element.emojiText !== "undefined"){
-                if (element.isCustomEmoji === true){
-                    const newCustomEmoji = document.createElement("img");
-                    newCustomEmoji.src = element.url;
-                    newCustomEmoji.classList.add("h-8")
-                    tmpElem.lastElementChild.appendChild(newCustomEmoji)
+        switch(newValue.platform){
+            case "youtube":
+                tmpElem.lastElementChild.classList.add("bg-rose-200/75")
+                if( newValue.avatar != ""){
+                    tmpElem.firstElementChild.src = newValue.avatar;
                 }
-                else {
-                    const newEmoji = document.createTextNode(element.emojiText)
-                    tmpElem.lastElementChild.appendChild(newEmoji)
-                }
+                tmpElem.lastElementChild.innerText = ""
+                newValue.message.forEach(element => {
+                    if ( typeof element.text !== "undefined"){
+                        const newText = document.createTextNode(element.text)
+                        tmpElem.lastElementChild.appendChild(newText)
+                    }
+                    else if( typeof element.emojiText !== "undefined"){
+                        if (element.isCustomEmoji === true){
+                            const newCustomEmoji = document.createElement("img");
+                            newCustomEmoji.src = element.url;
+                            newCustomEmoji.classList.add("h-8")
+                            tmpElem.lastElementChild.appendChild(newCustomEmoji)
+                        }
+                        else {
+                            const newEmoji = document.createTextNode(element.emojiText)
+                            tmpElem.lastElementChild.appendChild(newEmoji)
+                        }
                 
-            }
-        });
+                    }
+                });
+                break;
+            case "twitch":
+                tmpElem.lastElementChild.classList.add("bg-purple-200/75")
+                tmpElem.firstElementChild.src = "svg/TwitchGlitchPurpleBorder.svg";
+                tmpElem.lastElementChild.innerText = newValue.message;
+                break;
+            default:
+                return;
+
+        }
+        tmpElem.classList.remove("hidden")
         const newelm = chatElem.appendChild(tmpElem);
         let tl = anime.timeline({
             easing: 'easeOutExpo',
