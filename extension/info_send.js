@@ -52,7 +52,7 @@ module.exports = (nodecg) => {
         });
         frameInfo.push(Object.assign({}, info));
     }
-    if(typeof additionalInfo.value === 'object' &&  additionalInfo.value !== []){
+    if(typeof additionalInfo.value === 'object'){
         additionalInfo.value.forEach(element =>{
             if(element.queue){
                 queueInfo.push(Object.assign({}, element));
