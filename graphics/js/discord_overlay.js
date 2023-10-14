@@ -25,39 +25,3 @@ export const VoiceOverlay = (nodecg) => {
         })
     });
 }
-export const ChatOverlay = (nodecg) => {
-    nodecg.Replicant("chat", 'nodecg-discord-utils').on("change", (newValue) => {
-        const chatElem = document.getElementById("chat");
-        let tmpElem = document.getElementById("chat-template").cloneNode(true);
-        tmpElem.classList.remove("hidden")
-        tmpElem.lastElementChild.classList.add("bg-indigo-200/75")
-        tmpElem.id = "";
-        if( newValue.avatar !== ""){
-            tmpElem.firstElementChild.src = newValue.avatar;
-        }
-        tmpElem.lastElementChild.innerText = newValue.content;
-        const newelm = chatElem.appendChild(tmpElem);
-        let tl = anime.timeline({
-            easing: 'easeOutExpo',
-            duration: 750,
-        });
-        tl.add({
-            targets: newelm,
-            opacity: [{ value: 0, duration: 0 }, { value: 1 }],
-            translateX: [{ value: -100, duration: 0 }, { value: 0 }],
-            duration,
-        });
-        tl.add({
-            targets: newelm,
-            opacity: 0,
-            delay: timeToLive * 1000,
-            duration,
-        })
-        setTimeout(function () {
-            chatElem.removeChild(newelm)
-        }, timeToLive * 1000 + duration)
-        if (chatElem.childNodes.length > deadline) {
-            chatElem.removeChild(chatElem.firstElementChild)
-        }
-    });
-}
