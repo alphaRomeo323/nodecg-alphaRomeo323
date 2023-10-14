@@ -10,6 +10,11 @@
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            .text-border{
+                -webkit-text-stroke: 1px #000;
+            }
+        </style>
     </head>
     <body>
         <div id="vc-template" class="align-middle hidden text-left p-1">
@@ -32,12 +37,15 @@
                 </section>
             </div>
         </div>
-        <div id="chat-template" class="align-middle hidden text-left p-1 flex items-end">
-            <img class="rounded-full inline bg-white shadow align-middle my-1"
-                src="svg/f_f_health_44_svg_f_health_44_0bg.svg"
-                width="40" height="40" />
-            <div
-                class="rounded-t-2xl rounded-br-2xl shadow align-middle inline-block text-left leading-tight p-2 font-jp ml-2">Test</div>
+        <div id="chat-template" class="align-middle hidden text-left p-1">
+            <div class="text-white font-jp text-base leading-none text-border font-extrabold">test</div>
+            <div class="flex items-end">
+                <img class="rounded-full inline bg-white shadow align-middle my-1"
+                    src="svg/f_f_health_44_svg_f_health_44_0bg.svg"
+                    width="40" height="40" />
+                <div
+                    class="rounded-t-2xl rounded-br-2xl shadow align-middle inline-block text-left leading-tight p-2 font-jp ml-2">Test</div>
+            </div>
         </div>
         <!--Left Top-->
         <div id="vc" class="text-[24px] absolute overflow-hidden left-0 p-4">
@@ -97,8 +105,8 @@
         //js
         import {clock, textFadeUpdate} from "./js/common.js"
         import anime from "../node_modules/animejs/lib/anime.es.js"
-        import {VoiceOverlay, ChatOverlay} from "./js/discord_overlay.js"
-        import {YoutubeChatOverlay} from "./js/youtube_chat.js"
+        import {VoiceOverlay} from "./js/discord_overlay.js"
+        import {ChatOverlay} from "./js/chat_overlay.js"
         import {currentTrackUpdate} from "./js/playback_anime.js"
         //Replicants
         const vcRep = nodecg.Replicant("vc", 'nodecg-discord-utils');
@@ -125,14 +133,9 @@
             VoiceOverlay(nodecg);"counter-title"
         });
 
-        //Message History of Discord Channel
-        NodeCG.waitForReplicants(DiscordChatRep).then(() => {
+        //Messages from Discord/Youtube/Twitch
+        NodeCG.waitForReplicants(DiscordChatRep, LiveChatRep).then(() => {
             ChatOverlay(nodecg);
-        });
-
-        //Messages from Youtube/Twitch
-        NodeCG.waitForReplicants(LiveChatRep).then(() => {
-            YoutubeChatOverlay(nodecg);
         });
 
         //Logo image changer
