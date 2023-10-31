@@ -5,7 +5,7 @@
         <title>frame</title>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
-            href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap"
             rel="stylesheet"
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
@@ -13,6 +13,9 @@
         <style>
             .text-border{
                 -webkit-text-stroke: 1px #000;
+            }
+	    .font-jp {
+                font-family: "M PLUS Rounded 1c", sans-serif;
             }
         </style>
     </head>
@@ -24,7 +27,7 @@
             <div class="bg-sky-200/50 px-3 mr-2 rounded-xl shadow inline-block align-middle font-jp">Anonymous</div>
         </div>
         <div id="current-temp" class="absolute backdrop-blur-md bg-slate-200/75 w-[380px] h-[150px] rounded-l-lg overflow-hidden hidden top-20 right-0">
-            <div class="font-jp ml-1 text-[32px]">
+            <div class="font-jp font-medium ml-1 text-[32px]">
                 <section>
                     <span class="material-icons align-sub text-4xl mr-2">queue_music</span>
                     <span id="track-name"></span>
@@ -44,7 +47,7 @@
                     src="svg/f_f_health_44_svg_f_health_44_0bg.svg"
                     width="40" height="40" />
                 <div
-                    class="rounded-t-2xl rounded-br-2xl shadow align-middle inline-block text-left leading-tight p-2 font-jp ml-2">Test</div>
+                    class="rounded-t-2xl rounded-br-2xl shadow align-middle inline-block text-left leading-tight p-2 font-jp font-medium ml-2">Test</div>
             </div>
         </div>
         <!--Left Top-->
@@ -56,7 +59,7 @@
         <!--Right Top-->
         <div class="absolute bg-slate-200/75 px-4 rounded-full align-middle overflow-hidden shadow top-4 right-4">
             <span class="material-icons text-3xl align-sub">schedule</span>
-            <span id="clock" class="font-jp text-[32px]"></span>
+            <span id="clock" class="font-jp font-medium text-[32px]"></span>
         </div>
         <div class="m-0 w-screen h-screen overflow-hidden" id="current">
         </div>
@@ -66,20 +69,20 @@
         <div id="counter" class="hidden absolute bg-slate-200/75 left-1/2 top-0 rounded-b-lg h-[64px] w-[640px] text-center text-[32px] flex items-center justify-center">
             <div class="overflow-hidden font-jp ml-1 mb-1 mt-1 mr-1 leading-tight">
                 <span class="material-icons text-3xl">hourglass_full</span>
-                <span id="counter-title"></span>: <span id="counter-value" class="text-[48px]"></span>
+                <span id="counter-title" class="font-bold"></span>: <span id="counter-value" class="text-[48px] font-extrabold"></span>
             </div>
         </div>
         <div id="memo" class="absolute hidden bg-slate-200/75 top-0 left-1/2 rounded-b-lg h-[64px] w-[640px] text-center text-[32px] align-middle">
-            <div class="overflow-hidden font-jp absolute top-1 left-1 right-1 bottom-1 leading-tight flex items-center justify-center">
+            <div class="overflow-hidden font-jp font-bold absolute top-1 left-1 right-1 bottom-1 leading-tight flex items-center justify-center">
                 <span class="material-icons text-3xl">edit_note</span>
                 <span id="memo-text"></span>
             </div>
         </div>
         <!--Bottom-->
-        <div id="ad" class="absolute hiddenS bg-slate-200/75 bottom-0 left-1/2 rounded-t-lg w-[640px] h-[180px] pt-4 pl-4 font-jp">
+        <div id="ad" class="absolute hiddenS bg-slate-200/75 bottom-0 left-1/2 rounded-t-lg w-[640px] h-[180px] pt-4 pl-4 font-jp font-medium">
             <div class="flex items-center justify-center flex- font-jp text-3xl">
                 <div class="material-icons text-3xl w-16">favorite<br>thumb_up_alt</div>
-                <div class="text-center">高評価・チャンネル登録・フォローをよろしくお願いします！</div>
+                <div class="text-center font-bold">高評価・チャンネル登録・フォローをよろしくお願いします！</div>
             </div>
             <div class="flex items-center justify-center flex-wrap text-2xl">
                 <div id="twitter" class="mx-2 flex items-center">
@@ -328,9 +331,4 @@
 
         //End of Scripts
     </script>
-    <style>
-        .font-jp {
-            font-family: "M PLUS Rounded 1c", sans-serif;
-        }
-    </style>
 </html>
