@@ -45,12 +45,6 @@
         ],
         "dashboardPanels": [
             {
-                "width": "2",
-                "name": "time",
-                "title": "Time",
-                "file": "time.html"
-            },
-            {
                 "width": "3",
                 "name": "stream",
                 "title": "Stream Information",
@@ -85,6 +79,12 @@
                 "name": "counter",
                 "title": "Fun",
                 "file": "fun.html"
+            },
+            {
+                "width": "3",
+                "name": "mopidy",
+                "title": "Mopidy",
+                "file": "mopidy.html"
             }
         ],
         "graphics": [

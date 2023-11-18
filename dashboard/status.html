@@ -6,6 +6,10 @@
 </head>
 <body>
     <section>
+        <p>Clock</p>
+        <span id="clock"></span>
+    </section>
+    <section>
 		<p>Switcher</p>
  	   <button id="queue" class="switcher">queue</button>
  	   <button id="frame" class="switcher">frame</button>
@@ -90,10 +94,19 @@
 		    timeRep.value = val;
         }
     }
+    const clock = () => {
+		const chk = (i) => {
+			if (i < 10) return "0" + i;
+			else return i;
+		}
+		const time = new Date();
+		document.getElementById("clock").innerText = chk(time.getHours()) + ":" + chk(time.getMinutes()) + ":" + chk(time.getSeconds());
+	}
+	setInterval(clock, 1000);
     
 </script>
 <style>
-	.switcher{
+	.switcher,#clock{
 		font-size: xx-large;
 	}
 </style>

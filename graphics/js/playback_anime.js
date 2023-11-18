@@ -34,12 +34,12 @@ export const currentTrackUpdate = (replicant) => {
             });
         tl.add({
             targets:tmpElem,
-            translateX: [{ value: 380, duration: 0 }, { value: 0 }],
+            translateX: [{ value: 400, duration: 0 }, { value: 0 }],
             duration,
         });
         tl.add({
             targets:tmpElem,
-            translateX: 380,
+            translateX: 400,
             duration,
             delay: BGMdelay,
         });
