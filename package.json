@@ -79,12 +79,6 @@
                 "name": "counter",
                 "title": "Fun",
                 "file": "fun.html"
-            },
-            {
-                "width": "3",
-                "name": "mopidy",
-                "title": "Mopidy",
-                "file": "mopidy.html"
             }
         ],
         "graphics": [
