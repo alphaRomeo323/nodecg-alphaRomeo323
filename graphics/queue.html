@@ -188,20 +188,15 @@
         });
         playBackRep.on("change", newValue => {
             let tempText = ""
-            if (!newValue.playing){
+            if (newValue.state === 0){
                 tempText = "Stopped";
             }
             else {
-                if(newValue.artist !== ""){
-                    tempText = `${newValue.artist} -`;
-                }
-                else{
-                    tempText = "Unknown Artist -";
-                }
-                tempText += ` ${newValue.track}`;
+                tempText = `${newValue.artist} - ${newValue.title}`;
                 if(newValue.album !== ""){
                     tempText += ` (from ${newValue.album})`
                 }
+
             }
             textFadeUpdate(tempText, document.getElementById("bgm-text"), document.getElementById("bgm-text"))
         });

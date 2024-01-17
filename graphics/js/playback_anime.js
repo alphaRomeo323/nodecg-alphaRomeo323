@@ -16,9 +16,9 @@ export const currentTrackUpdate = (replicant) => {
     replicant.on("change",(newValue) =>{
         if(frameElm.lastElementChild)
             frameElm.removeChild(frameElm.lastElementChild);
-        if (newValue.playing === false)
+        if (newValue.state === 0)
             return;
-        trackNameElm.innerText = newValue.track;
+        trackNameElm.innerText = newValue.title;
         if (newValue.artist !== "")
             trackArtistElm.innerText = `by ${newValue.artist}`;
         else trackArtistElm.innerText = "";
